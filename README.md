@@ -32,6 +32,12 @@ project_ops/
   .gitignore
   templates/
     project_admin_baseline.md
+    bootstrap_manifest.md
+    project_ops_contract.md
+    architecture_readme.md
+    governance_readme.md
+    roadmap.md
+    changelog.md
     request.md
     roadmap_entry.md
     changelog_entry.md
@@ -42,6 +48,9 @@ project_ops/
   schemas/
     project_config.schema.json
     request_state.schema.json
+  tools/
+    project_ops_bootstrap.py
+    project_ops_audit.py
   docs/
     README.md
     concepts/
@@ -49,6 +58,7 @@ project_ops/
     adopters/
       getting_started.md
       configuration.md
+      execution_process.md
   examples/
     project_config.minimal.json
     request_state.sidecar.json
@@ -56,6 +66,12 @@ project_ops/
       README.md
       .project_ops/
         config.json
+      docs/
+        project_ops.md
+        roadmap/
+        reports/
+        architecture/
+        governance/
 ```
 
 ## Start Here
@@ -63,8 +79,9 @@ project_ops/
 1. Read [Getting Started](docs/adopters/getting_started.md).
 2. Review the [Project Admin Baseline](templates/project_admin_baseline.md).
 3. Copy or adapt [project_config.minimal.json](examples/project_config.minimal.json).
-4. Use [request.md](templates/request.md) for the first durable request.
-5. Validate local configuration against [project_config.schema.json](schemas/project_config.schema.json) when tooling is available.
+4. Read the [Execution Process](docs/adopters/execution_process.md).
+5. Use [request.md](templates/request.md) for the first durable request.
+6. Run an audit-only check with `tools/project_ops_audit.py`.
 
 ## Core Ideas
 
@@ -102,6 +119,8 @@ The first public version should focus on:
 - a minimal synthetic adopter example
 - Project Ops concept docs
 - `project_admin_baseline.md`
+- bootstrap manifest template
+- starter docs templates
 - request artifact template
 - roadmap entry template
 - changelog entry template
@@ -109,7 +128,27 @@ The first public version should focus on:
 - post-mortem template
 - handoff template
 - project config schema
-- audit-only checks (future tooling)
-- dry-run-first bootstrap behavior (future tooling)
+- audit-only checks
+- dry-run-first bootstrap behavior
 
-Automation can grow later. The first release should be understandable as plain Markdown.
+Automation should stay boring and inspectable. The first release should be understandable as plain Markdown, with tools that report or create only the baseline structure.
+
+## Bootstrap A Blank Repo
+
+Dry-run first:
+
+```powershell
+python tools\project_ops_bootstrap.py --repo C:\path\to\new-project --project-name "New Project"
+```
+
+Apply only after reviewing the plan:
+
+```powershell
+python tools\project_ops_bootstrap.py --repo C:\path\to\new-project --project-name "New Project" --apply
+```
+
+Audit without rewriting:
+
+```powershell
+python tools\project_ops_audit.py --repo C:\path\to\new-project
+```

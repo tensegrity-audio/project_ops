@@ -12,7 +12,10 @@
     "reports": "docs/reports",
     "changelog": "docs/reports/changelog.md",
     "governance": "docs/governance",
-    "requestTemplate": "docs/roadmap/in_progress/_REQUEST_TEMPLATE.md"
+    "requestTemplate": "docs/roadmap/in_progress/_REQUEST_TEMPLATE.md",
+    "projectOpsContract": "docs/project_ops.md",
+    "templateRoot": "docs/templates",
+    "projectAdminBaselineTemplate": "docs/templates/project_admin_baseline.md"
   },
   "scopeLabels": [
     "governance",
@@ -20,7 +23,15 @@
   ],
   "requiredDocs": [
     "README.md",
+    "CONTRIBUTING.md",
+    "CHANGELOG.md",
+    ".gitignore",
+    ".project_ops/config.json",
+    "docs/project_ops.md",
     "docs/roadmap/roadmap.md",
+    "docs/roadmap/in_progress/_REQUEST_TEMPLATE.md",
+    "docs/architecture/README.md",
+    "docs/governance/README.md",
     "docs/reports/changelog.md"
   ],
   "privacy": {
@@ -35,6 +46,40 @@
     "requireChangelog": true,
     "requireRoadmapParity": true,
     "allowEmptyRoadmap": true,
-    "dryRunByDefault": true
+    "dryRunByDefault": true,
+    "commands": [
+      {
+        "name": "project-ops-audit",
+        "command": "python <path-to-project_ops>/tools/project_ops_audit.py --repo .",
+        "required": true,
+        "description": "Audit local Project Ops structure without rewriting files."
+      }
+    ]
+  },
+  "bootstrap": {
+    "requiredFiles": [
+      "README.md",
+      "CONTRIBUTING.md",
+      "CHANGELOG.md",
+      ".gitignore",
+      ".project_ops/config.json",
+      "docs/project_ops.md",
+      "docs/roadmap/roadmap.md",
+      "docs/roadmap/in_progress/_REQUEST_TEMPLATE.md",
+      "docs/reports/changelog.md"
+    ],
+    "recommendedFiles": [
+      ".editorconfig",
+      "LICENSE",
+      "SECURITY.md"
+    ],
+    "initialDirectories": [
+      "docs/architecture",
+      "docs/governance",
+      "docs/roadmap/in_progress",
+      "docs/roadmap/completed",
+      "docs/reports",
+      "docs/templates"
+    ]
   }
 }

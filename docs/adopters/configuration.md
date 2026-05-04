@@ -23,8 +23,8 @@ Use `.project_ops/config.json` in the adopter repo. A standalone example lives a
     "governance": "docs/governance",
     "requestTemplate": "docs/roadmap/in_progress/_REQUEST_TEMPLATE.md",
     "projectOpsContract": "docs/project_ops.md",
-    "templateRoot": "templates",
-    "projectAdminBaselineTemplate": "templates/project_admin_baseline.md"
+    "templateRoot": "docs/templates",
+    "projectAdminBaselineTemplate": "docs/templates/project_admin_baseline.md"
   },
   "scopeLabels": [
     "governance",
@@ -34,10 +34,15 @@ Use `.project_ops/config.json` in the adopter repo. A standalone example lives a
   ],
   "requiredDocs": [
     "README.md",
-    "LICENSE",
     "CONTRIBUTING.md",
+    "CHANGELOG.md",
+    ".gitignore",
+    ".project_ops/config.json",
+    "docs/project_ops.md",
     "docs/roadmap/roadmap.md",
     "docs/roadmap/in_progress/_REQUEST_TEMPLATE.md",
+    "docs/architecture/README.md",
+    "docs/governance/README.md",
     "docs/reports/changelog.md"
   ],
   "privacy": {
@@ -52,7 +57,41 @@ Use `.project_ops/config.json` in the adopter repo. A standalone example lives a
     "requireChangelog": true,
     "requireRoadmapParity": true,
     "allowEmptyRoadmap": true,
-    "dryRunByDefault": true
+    "dryRunByDefault": true,
+    "commands": [
+      {
+        "name": "project-ops-audit",
+        "command": "python <path-to-project_ops>/tools/project_ops_audit.py --repo .",
+        "required": true,
+        "description": "Audit local Project Ops structure without rewriting files."
+      }
+    ]
+  },
+  "bootstrap": {
+    "requiredFiles": [
+      "README.md",
+      "CONTRIBUTING.md",
+      "CHANGELOG.md",
+      ".gitignore",
+      ".project_ops/config.json",
+      "docs/project_ops.md",
+      "docs/roadmap/roadmap.md",
+      "docs/roadmap/in_progress/_REQUEST_TEMPLATE.md",
+      "docs/reports/changelog.md"
+    ],
+    "recommendedFiles": [
+      ".editorconfig",
+      "LICENSE",
+      "SECURITY.md"
+    ],
+    "initialDirectories": [
+      "docs/architecture",
+      "docs/governance",
+      "docs/roadmap/in_progress",
+      "docs/roadmap/completed",
+      "docs/reports",
+      "docs/templates"
+    ]
   }
 }
 ```
@@ -67,7 +106,23 @@ Before adopting Project Ops, decide:
 - where request artifacts live,
 - where private notes and local evidence are allowed,
 - which validation command proves the repo is healthy,
+- which files and directories bootstrap must create,
 - and when audits should warn versus fail.
+
+## Validation Commands
+
+Use `validation.commands` for the commands a contributor or agent should run before closeout. Project Ops does not decide the command for the adopter. It records the local truth.
+
+Each command has:
+
+- `name`: stable machine-readable name,
+- `command`: command text to run from the repo root,
+- `required`: whether it is part of the normal gate,
+- `description`: short human explanation.
+
+## Bootstrap Expectations
+
+Use `bootstrap.requiredFiles`, `bootstrap.recommendedFiles`, and `bootstrap.initialDirectories` to make the starter structure auditable. `tools/project_ops_bootstrap.py` creates a default version of this structure; `tools/project_ops_audit.py` checks whether it still exists.
 
 ## Public Examples
 

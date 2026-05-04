@@ -17,6 +17,9 @@ Project Ops owns reusable patterns:
 - phase-exit audit template,
 - public/private boundary rules,
 - and dry-run-first extraction habits.
+- audit-only readiness checks,
+- dry-run-first bootstrap behavior,
+- and starter docs for blank repositories.
 
 ## What Adopters Own
 
@@ -61,3 +64,22 @@ The Markdown request template is the human-facing artifact. The request-state sc
 Use `templates/request.md` for the durable document and `schemas/request_state.schema.json` for a JSON state file when automation needs phase, state, status, and history in a structured form.
 
 See `examples/request_state.sidecar.json` for a synthetic sidecar example.
+
+## Blank-Repo Bootstrap
+
+Project Ops can start from an empty repository in two safe steps:
+
+```powershell
+python tools\project_ops_bootstrap.py --repo <repo> --project-name "<Project>"
+python tools\project_ops_bootstrap.py --repo <repo> --project-name "<Project>" --apply
+```
+
+The first command prints a create/skip plan. The second command creates only missing files and never overwrites existing project-owned files.
+
+After bootstrap, run:
+
+```powershell
+python tools\project_ops_audit.py --repo <repo>
+```
+
+Audit mode is read-only. It is the first reusable behavior every adopter should be able to trust.

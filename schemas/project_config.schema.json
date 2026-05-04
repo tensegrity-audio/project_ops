@@ -92,7 +92,44 @@
         "requireChangelog": { "type": "boolean" },
         "requireRoadmapParity": { "type": "boolean" },
         "allowEmptyRoadmap": { "type": "boolean" },
-        "dryRunByDefault": { "type": "boolean" }
+        "dryRunByDefault": { "type": "boolean" },
+        "commands": {
+          "type": "array",
+          "description": "Project-local validation commands that prove the repository is healthy.",
+          "items": {
+            "type": "object",
+            "required": ["name", "command"],
+            "properties": {
+              "name": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9_-]*$"
+              },
+              "command": { "type": "string", "minLength": 1 },
+              "required": { "type": "boolean" },
+              "description": { "type": "string" }
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "bootstrap": {
+      "type": "object",
+      "description": "Expected starter files and directories for bootstrapping or auditing this project.",
+      "properties": {
+        "requiredFiles": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/relativePath" }
+        },
+        "recommendedFiles": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/relativePath" }
+        },
+        "initialDirectories": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/relativePath" }
+        }
       },
       "additionalProperties": true
     },

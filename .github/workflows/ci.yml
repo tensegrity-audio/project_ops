@@ -1,0 +1,20 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile tools
+        run: python -m py_compile tools/project_ops_audit.py tools/project_ops_bootstrap.py
+      - name: Test bootstrap and audit
+        run: python -m unittest discover -s tests
+      - name: Audit minimal example
+        run: python tools/project_ops_audit.py --repo examples/minimal_project

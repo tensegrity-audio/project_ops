@@ -22,13 +22,13 @@ The template at `templates/project_admin_baseline.md` explains which files are m
 
 ## Five-Minute Adoption Flow
 
-1. Copy `templates/project_admin_baseline.md` into your planning notes and decide which baseline files apply.
-2. Create `.project_ops/config.json` from `examples/project_config.minimal.json`.
-3. Copy `templates/request.md` to `docs/roadmap/in_progress/_REQUEST_TEMPLATE.md`.
-4. Create `docs/roadmap/roadmap.md` and `docs/reports/changelog.md`.
-5. Add your project-specific scope labels, required docs, privacy paths, and validation policy to `.project_ops/config.json`.
+1. Run `tools/project_ops_bootstrap.py --repo <project> --project-name "<Project>"` and review the dry-run plan.
+2. Re-run with `--apply` only after the create/skip plan looks right.
+3. Edit `.project_ops/config.json` for project-specific scope labels, required docs, privacy paths, and validation commands.
+4. Read `docs/project_ops.md` and `docs/adopters/execution_process.md`.
+5. Create the first request from `docs/roadmap/in_progress/_REQUEST_TEMPLATE.md`.
 
-Until automation exists, treat this as a manual checklist.
+Existing repos can still adopt manually by copying templates. New repos should prefer the dry-run bootstrap command because it does not overwrite project-owned files.
 
 ## Configure The Project
 
@@ -41,7 +41,8 @@ A minimal `.project_ops/config.json` should define:
 - scope labels,
 - required docs,
 - privacy rules,
-- validation policy.
+- validation policy,
+- bootstrap expectations.
 
 Use `schemas/project_config.schema.json` as the contract for that config.
 

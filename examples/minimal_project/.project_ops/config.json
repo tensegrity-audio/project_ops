@@ -15,8 +15,8 @@
     "governance": "docs/governance",
     "requestTemplate": "docs/roadmap/in_progress/_REQUEST_TEMPLATE.md",
     "projectOpsContract": "docs/project_ops.md",
-    "templateRoot": "templates",
-    "projectAdminBaselineTemplate": "templates/project_admin_baseline.md"
+    "templateRoot": "docs/templates",
+    "projectAdminBaselineTemplate": "docs/templates/project_admin_baseline.md"
   },
   "scopeLabels": [
     "governance",
@@ -26,10 +26,15 @@
   ],
   "requiredDocs": [
     "README.md",
-    "LICENSE",
     "CONTRIBUTING.md",
+    "CHANGELOG.md",
+    ".gitignore",
+    ".project_ops/config.json",
+    "docs/project_ops.md",
     "docs/roadmap/roadmap.md",
     "docs/roadmap/in_progress/_REQUEST_TEMPLATE.md",
+    "docs/architecture/README.md",
+    "docs/governance/README.md",
     "docs/reports/changelog.md"
   ],
   "privacy": {
@@ -44,7 +49,35 @@
     "requireChangelog": true,
     "requireRoadmapParity": true,
     "allowEmptyRoadmap": true,
-    "dryRunByDefault": true
+    "dryRunByDefault": true,
+    "commands": [
+      {
+        "name": "project-ops-audit",
+        "command": "python ../../tools/project_ops_audit.py --repo examples/minimal_project",
+        "required": true,
+        "description": "Audit the synthetic minimal adopter without rewriting files."
+      }
+    ]
+  },
+  "bootstrap": {
+    "requiredFiles": [
+      "README.md",
+      "docs/project_ops.md",
+      "docs/roadmap/roadmap.md",
+      "docs/roadmap/in_progress/_REQUEST_TEMPLATE.md",
+      "docs/reports/changelog.md"
+    ],
+    "recommendedFiles": [
+      "docs/architecture/README.md",
+      "docs/governance/README.md"
+    ],
+    "initialDirectories": [
+      "docs/architecture",
+      "docs/governance",
+      "docs/roadmap/in_progress",
+      "docs/roadmap/completed",
+      "docs/reports"
+    ]
   },
   "adoption": {
     "mode": "manual-templates",
