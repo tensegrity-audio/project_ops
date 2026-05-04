@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tensegrity-audio.github.io/project_ops/schemas/project_config.schema.json",
+  "title": "Project Ops Project Config",
+  "description": "Project-local adapter config for running reusable Project Ops tooling without hardcoded repo paths or scope labels.",
+  "type": "object",
+  "required": [
+    "project",
+    "paths",
+    "scopeLabels",
+    "requiredDocs",
+    "privacy",
+    "validation"
+  ],
+  "properties": {
+    "project": {
+      "type": "object",
+      "required": ["id", "name", "role"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9_-]*$"
+        },
+        "name": { "type": "string", "minLength": 1 },
+        "role": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "paths": {
+      "type": "object",
+      "required": [
+        "roadmap",
+        "inProgress",
+        "completed",
+        "reports",
+        "changelog",
+        "governance",
+        "requestTemplate"
+      ],
+      "properties": {
+        "roadmap": { "$ref": "#/$defs/relativePath" },
+        "inProgress": { "$ref": "#/$defs/relativePath" },
+        "completed": { "$ref": "#/$defs/relativePath" },
+        "reports": { "$ref": "#/$defs/relativePath" },
+        "changelog": { "$ref": "#/$defs/relativePath" },
+        "governance": { "$ref": "#/$defs/relativePath" },
+        "requestTemplate": { "$ref": "#/$defs/relativePath" },
+        "projectOpsContract": { "$ref": "#/$defs/relativePath" },
+        "templateRoot": { "$ref": "#/$defs/relativePath" },
+        "projectAdminBaselineTemplate": { "$ref": "#/$defs/relativePath" }
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/relativePath"
+      }
+    },
+    "scopeLabels": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9-]*$"
+      }
+    },
+    "requiredDocs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/relativePath"
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "required": ["defaultVisibility", "publicExamplesRequireSanitization"],
+      "properties": {
+        "defaultVisibility": {
+          "type": "string",
+          "enum": ["public", "local-private", "internal"]
+        },
+        "publicExamplesRequireSanitization": { "type": "boolean" },
+        "privateHistoryPaths": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/globPath" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "validation": {
+      "type": "object",
+      "required": ["requireChangelog", "requireRoadmapParity", "dryRunByDefault"],
+      "properties": {
+        "requireChangelog": { "type": "boolean" },
+        "requireRoadmapParity": { "type": "boolean" },
+        "allowEmptyRoadmap": { "type": "boolean" },
+        "dryRunByDefault": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "adoption": {
+      "type": "object",
+      "properties": {
+        "mode": { "type": "string" },
+        "frameworkRepo": {
+          "type": "string",
+          "description": "Reusable framework repository URL or owner/name slug, such as https://github.com/tensegrity-audio/project_ops."
+        },
+        "frameworkRepoName": {
+          "type": "string",
+          "description": "Short repository slug, such as project_ops."
+        },
+        "frameworkProductName": {
+          "type": "string",
+          "description": "Human-facing product name, such as Project Ops."
+        },
+        "secondPilotRepo": { "type": "string" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "not": {
+        "pattern": "^[A-Za-z]:|^/"
+      }
+    },
+    "globPath": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

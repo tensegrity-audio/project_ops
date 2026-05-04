@@ -1,0 +1,21 @@
+# Project-local generated files
+.DS_Store
+Thumbs.db
+
+# Python/tooling caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local environment and editor state
+.env
+.env.*
+!.env.example
+.vscode/
+.idea/
+
+# Project Ops local/adopter state
+.local/
+docs/private/

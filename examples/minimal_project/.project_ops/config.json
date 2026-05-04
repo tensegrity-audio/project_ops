@@ -1,0 +1,55 @@
+{
+  "$schema": "../../../schemas/project_config.schema.json",
+  "project": {
+    "id": "minimal-project",
+    "name": "Minimal Project",
+    "role": "example-adopter",
+    "description": "Synthetic example showing a small Project Ops adopter config."
+  },
+  "paths": {
+    "roadmap": "docs/roadmap/roadmap.md",
+    "inProgress": "docs/roadmap/in_progress",
+    "completed": "docs/roadmap/completed",
+    "reports": "docs/reports",
+    "changelog": "docs/reports/changelog.md",
+    "governance": "docs/governance",
+    "requestTemplate": "docs/roadmap/in_progress/_REQUEST_TEMPLATE.md",
+    "projectOpsContract": "docs/project_ops.md",
+    "templateRoot": "templates",
+    "projectAdminBaselineTemplate": "templates/project_admin_baseline.md"
+  },
+  "scopeLabels": [
+    "governance",
+    "docs",
+    "runtime",
+    "tests"
+  ],
+  "requiredDocs": [
+    "README.md",
+    "LICENSE",
+    "CONTRIBUTING.md",
+    "docs/roadmap/roadmap.md",
+    "docs/roadmap/in_progress/_REQUEST_TEMPLATE.md",
+    "docs/reports/changelog.md"
+  ],
+  "privacy": {
+    "defaultVisibility": "public",
+    "publicExamplesRequireSanitization": true,
+    "privateHistoryPaths": [
+      "docs/private/**",
+      ".local/**"
+    ]
+  },
+  "validation": {
+    "requireChangelog": true,
+    "requireRoadmapParity": true,
+    "allowEmptyRoadmap": true,
+    "dryRunByDefault": true
+  },
+  "adoption": {
+    "mode": "manual-templates",
+    "frameworkRepo": "https://github.com/tensegrity-audio/project_ops",
+    "frameworkRepoName": "project_ops",
+    "frameworkProductName": "Project Ops"
+  }
+}

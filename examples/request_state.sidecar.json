@@ -1,0 +1,18 @@
+{
+  "$schema": "../schemas/request_state.schema.json",
+  "requestId": "project-bootstrap",
+  "requestPath": "docs/roadmap/in_progress/project_bootstrap.md",
+  "phase": "INTAKE",
+  "state": "DRAFT",
+  "status": "Draft",
+  "updatedAt": "2030-01-01T00:00:00Z",
+  "history": [
+    {
+      "at": "2030-01-01T00:00:00Z",
+      "phase": "INTAKE",
+      "state": "DRAFT",
+      "event": "created",
+      "note": "Synthetic example sidecar for a request artifact."
+    }
+  ]
+}
