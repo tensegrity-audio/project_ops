@@ -15,7 +15,7 @@ from pathlib import Path
 
 
 PROJECT_OPS_ROOT = Path(__file__).resolve().parents[1]
-SCHEMA_ID = "https://raw.githubusercontent.com/tensegrity-audio/project_ops/v0.1.1/schemas/project_config.schema.json"
+SCHEMA_ID = "https://tensegrity-audio.github.io/project_ops/schemas/v0.1.2/project_config.schema.json"
 
 
 @dataclass(frozen=True)

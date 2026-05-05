@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.1.2 - 2026-05-05
+
+- Replaced raw GitHub schema identifiers with repo-owned, versioned Project Ops schema namespace IDs.
+- Updated bootstrap-generated configs and minimal examples to consume the `v0.1.2` Project Ops schema namespace.
+
 ## v0.1.1 - 2026-05-05
 
 - Pinned Project Ops schema IDs and bootstrap-generated config schemas to the `v0.1.1` tag so adopters can consume a release-stable schema URL.

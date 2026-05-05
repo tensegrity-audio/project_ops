@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/tensegrity-audio/project_ops/v0.1.1/schemas/project_config.schema.json",
+  "$id": "https://tensegrity-audio.github.io/project_ops/schemas/v0.1.2/project_config.schema.json",
   "title": "Project Ops Project Config",
   "description": "Project-local adapter config for running reusable Project Ops tooling without hardcoded repo paths or scope labels.",
   "type": "object",
