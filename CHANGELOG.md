@@ -1,6 +1,10 @@
 # Changelog
 
-## Unreleased
+## v0.1.1 - 2026-05-05
+
+- Pinned Project Ops schema IDs and bootstrap-generated config schemas to the `v0.1.1` tag so adopters can consume a release-stable schema URL.
+
+## v0.1.0 - 2026-05-05
 
 - Seeded Project Ops with public-safe templates, schemas, and adopter guidance.
 - Added dry-run-first bootstrap and audit tooling for blank-repo adoption.
