@@ -44,7 +44,9 @@ Templates should:
 For this seed stage, validate by checking:
 
 ```powershell
+python tools\project_ops_audit.py --repo examples\minimal_project
+python tools\project_ops_request_audit.py --repo ..\tensegrity --request-id docops_peel_off_plan
+python tools\project_ops_request_audit.py --repo ..\synaptome --request-id project_ops_compatibility
+python -m py_compile tools\project_ops_audit.py tools\project_ops_bootstrap.py tools\project_ops_request_audit.py
 git diff --check
 ```
-
-When tooling lands, this section should point to the Project Ops audit and bootstrap commands.

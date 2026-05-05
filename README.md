@@ -51,6 +51,7 @@ project_ops/
   tools/
     project_ops_bootstrap.py
     project_ops_audit.py
+    project_ops_request_audit.py
   docs/
     README.md
     concepts/
@@ -82,6 +83,7 @@ project_ops/
 4. Read the [Execution Process](docs/adopters/execution_process.md).
 5. Use [request.md](templates/request.md) for the first durable request.
 6. Run an audit-only check with `tools/project_ops_audit.py`.
+7. Audit request/roadmap/changelog parity with `tools/project_ops_request_audit.py`.
 
 ## Core Ideas
 

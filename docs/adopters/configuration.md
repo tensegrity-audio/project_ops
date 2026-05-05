@@ -64,6 +64,12 @@ Use `.project_ops/config.json` in the adopter repo. A standalone example lives a
         "command": "python <path-to-project_ops>/tools/project_ops_audit.py --repo .",
         "required": true,
         "description": "Audit local Project Ops structure without rewriting files."
+      },
+      {
+        "name": "request-audit",
+        "command": "python <path-to-project_ops>/tools/project_ops_request_audit.py --repo . --request-id <request_id>",
+        "required": true,
+        "description": "Audit one request artifact against local roadmap and changelog state."
       }
     ]
   },
@@ -111,7 +117,7 @@ Before adopting Project Ops, decide:
 
 ## Validation Commands
 
-Use `validation.commands` for the commands a contributor or agent should run before closeout. Project Ops does not decide the command for the adopter. It records the local truth.
+Use `validation.commands` for the commands a contributor or agent should run before closeout. Project Ops does not decide the full command list for the adopter. It records the local truth and provides reusable checks that adopters can call.
 
 Each command has:
 
@@ -123,6 +129,8 @@ Each command has:
 ## Bootstrap Expectations
 
 Use `bootstrap.requiredFiles`, `bootstrap.recommendedFiles`, and `bootstrap.initialDirectories` to make the starter structure auditable. `tools/project_ops_bootstrap.py` creates a default version of this structure; `tools/project_ops_audit.py` checks whether it still exists.
+
+Use `tools/project_ops_request_audit.py` when a repository wants Project Ops to verify request state, roadmap parity, and changelog breadcrumbs from outside the adopter repo. The adopter still owns its roadmap and history; Project Ops owns the reusable audit behavior.
 
 ## Public Examples
 
