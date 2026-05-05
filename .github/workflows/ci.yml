@@ -13,7 +13,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Compile tools
-        run: python -m py_compile tools/project_ops_audit.py tools/project_ops_bootstrap.py
+        run: python -m py_compile tools/project_ops_audit.py tools/project_ops_bootstrap.py tools/project_ops_request_audit.py
       - name: Test bootstrap and audit
         run: python -m unittest discover -s tests
       - name: Audit minimal example

@@ -10,6 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 BOOTSTRAP = ROOT / "tools" / "project_ops_bootstrap.py"
 AUDIT = ROOT / "tools" / "project_ops_audit.py"
+REQUEST_AUDIT = ROOT / "tools" / "project_ops_request_audit.py"
 
 
 def run_tool(*args: str, cwd: Path | None = None) -> subprocess.CompletedProcess[str]:
@@ -76,6 +77,64 @@ class ProjectOpsBootstrapTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertIn("skip existing: README.md", result.stdout)
             self.assertEqual(readme.read_text(encoding="utf-8"), "# Existing\n\nKeep me.\n")
+
+    def test_request_audit_passes_for_synchronized_request(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp) / "adopter"
+            request_dir = repo / "docs" / "roadmap" / "in_progress"
+            reports_dir = repo / "docs" / "reports"
+            config_dir = repo / ".project_ops"
+            request_dir.mkdir(parents=True)
+            reports_dir.mkdir(parents=True)
+            config_dir.mkdir(parents=True)
+
+            config_dir.joinpath("config.json").write_text(
+                """{
+  "paths": {
+    "roadmap": "docs/roadmap/roadmap.md",
+    "inProgress": "docs/roadmap/in_progress",
+    "completed": "docs/roadmap/completed",
+    "changelog": "docs/reports/changelog.md"
+  },
+  "validation": {
+    "requireChangelog": true,
+    "requireRoadmapParity": true
+  }
+}
+""",
+                encoding="utf-8",
+            )
+            state_summary = """State Summary
+
+- Phase: EXECUTION
+- Status: In Progress
+- Steps Complete: 1/2
+- Progress: Fixture request is synchronized.
+- Last Step Outcome: 2026-05-05 - Created request audit fixture.
+- Next Step: Keep fixture green.
+- Dependencies / Overlap: Project Ops request audit.
+- Blocking Issues / Unknowns: None.
+- Impact / Priority Notes: Proves downstream request audit tooling in CI.
+- Resume From: Continue from fixture validation.
+- Project Ops / Roadmap Updates (timestamped): 2026-05-05 - Fixture request synchronized with roadmap and changelog.
+"""
+            request_dir.joinpath("example_request.md").write_text(
+                f"# Example Request\n\n{state_summary}",
+                encoding="utf-8",
+            )
+            repo.joinpath("docs", "roadmap", "roadmap.md").write_text(
+                f"# Roadmap\n\n## Example Request\n\n{state_summary}\nRequest Doc: docs/roadmap/in_progress/example_request.md\n",
+                encoding="utf-8",
+            )
+            reports_dir.joinpath("changelog.md").write_text(
+                "# Changelog\n\n- 2026-05-05 - example_request fixture added.\n",
+                encoding="utf-8",
+            )
+
+            result = run_tool(str(REQUEST_AUDIT), "--repo", str(repo), "--request-id", "example_request")
+
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn("Result: PASS", result.stdout)
 
 
 if __name__ == "__main__":
