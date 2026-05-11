@@ -49,6 +49,7 @@ def render_config(project_id: str, project_name: str, role: str, visibility: str
             "projectOpsContract": "docs/project_ops.md",
             "templateRoot": "docs/templates",
             "projectAdminBaselineTemplate": "docs/templates/project_admin_baseline.md",
+            "prioritizationPolicy": "docs/governance/prioritization_policy.md",
         },
         "scopeLabels": ["governance", "docs", "runtime", "tests"],
         "requiredDocs": [
@@ -80,6 +81,18 @@ def render_config(project_id: str, project_name: str, role: str, visibility: str
                     "command": "python <path-to-project_ops>/tools/project_ops_audit.py --repo .",
                     "required": True,
                     "description": "Audit local Project Ops structure without rewriting files.",
+                },
+                {
+                    "name": "request-audit",
+                    "command": "python <path-to-project_ops>/tools/project_ops_request_audit.py --repo . --request-id <request_id>",
+                    "required": True,
+                    "description": "Audit one request artifact against local roadmap and changelog state.",
+                },
+                {
+                    "name": "roadmap-check",
+                    "command": "python <path-to-project_ops>/tools/project_ops_roadmap.py --repo .",
+                    "required": True,
+                    "description": "Check roadmap entries against local request artifacts without rewriting files.",
                 }
             ],
         },
@@ -95,7 +108,12 @@ def render_config(project_id: str, project_name: str, role: str, visibility: str
                 "docs/roadmap/in_progress/_REQUEST_TEMPLATE.md",
                 "docs/reports/changelog.md",
             ],
-            "recommendedFiles": [".editorconfig", "LICENSE", "SECURITY.md"],
+            "recommendedFiles": [
+                ".editorconfig",
+                "LICENSE",
+                "SECURITY.md",
+                "docs/governance/prioritization_policy.md",
+            ],
             "initialDirectories": [
                 "docs/architecture",
                 "docs/governance",
@@ -137,8 +155,45 @@ Local operating files:
 - `docs/roadmap/in_progress/_REQUEST_TEMPLATE.md` defines request artifacts.
 - `docs/reports/changelog.md` records meaningful project changes.
 - `docs/governance/README.md` explains local decision rules.
+- `docs/governance/prioritization_policy.md` explains roadmap scoring and readiness gates when used.
 
-Project Ops provides reusable structure. This repository owns its own product decisions, roadmap, reports, and validation evidence.""",
+Project Ops provides reusable structure. This repository owns its own product decisions, roadmap, reports, and validation evidence.
+
+## Local Subsystem Connections
+
+| Local file or folder | Connects to | Why it matters |
+| --- | --- | --- |
+| `.project_ops/config.json` | Project Ops audit tools and local docs. | Keeps paths, scope labels, privacy posture, and validation commands explicit. |
+| `docs/project_ops.md` | README, roadmap, governance, and contributors. | Gives people and agents the local operating map. |
+| `docs/roadmap/in_progress/_REQUEST_TEMPLATE.md` | Request artifacts. | Gives every request the same state, risk, validation, and resume fields. |
+| `docs/roadmap/roadmap.md` | Request artifacts and changelog. | Makes active and completed work visible in one planning surface. |
+| `docs/reports/changelog.md` | Roadmap, releases, and closeout notes. | Records meaningful outcomes after the work changes. |
+| `docs/architecture/` | Requests and implementation work. | Holds project-specific system maps and contracts. |
+| `docs/governance/` | Config, prioritization, validation, and review policy. | Explains local decision rules, readiness gates, and ownership boundaries.
+
+## Agent Start Checklist
+
+Before changing files, an agent should read:
+
+1. This document.
+2. `.project_ops/config.json`.
+3. The active request artifact, if one exists.
+4. `docs/roadmap/roadmap.md`.
+5. `docs/reports/changelog.md`.
+6. `docs/governance/prioritization_policy.md` if the project uses one.
+7. Any architecture, governance, or validation docs named by the request.
+
+Use the Project Ops Agent Execution Contract from the installed Project Ops version as the detailed step-by-step protocol.
+
+## Operating Loop
+
+1. Open or create a request artifact from `docs/roadmap/in_progress/_REQUEST_TEMPLATE.md`.
+2. Keep the request State Summary current.
+3. Compute priority and Ready State before execution.
+4. Mirror active request state into `docs/roadmap/roadmap.md`.
+5. Record meaningful outcomes in `docs/reports/changelog.md`.
+6. Run the validation commands listed in `.project_ops/config.json`.
+7. Close with doc sync and a post-mortem when the request is complete.""",
     )
 
 
@@ -195,6 +250,7 @@ def planned_files(project_id: str, project_name: str, role: str, visibility: str
         PlannedFile(Path("docs/project_ops.md"), render_project_ops_doc(project_name)),
         PlannedFile(Path("docs/architecture/README.md"), template("architecture_readme.md")),
         PlannedFile(Path("docs/governance/README.md"), template("governance_readme.md")),
+        PlannedFile(Path("docs/governance/prioritization_policy.md"), template("prioritization_policy.md")),
         PlannedFile(Path("docs/roadmap/roadmap.md"), template("roadmap.md")),
         PlannedFile(Path("docs/roadmap/in_progress/_REQUEST_TEMPLATE.md"), template("request.md")),
         PlannedFile(Path("docs/roadmap/completed/.gitkeep"), ""),
@@ -204,6 +260,7 @@ def planned_files(project_id: str, project_name: str, role: str, visibility: str
         PlannedFile(Path("docs/templates/project_ops_contract.md"), template("project_ops_contract.md")),
         PlannedFile(Path("docs/templates/architecture_readme.md"), template("architecture_readme.md")),
         PlannedFile(Path("docs/templates/governance_readme.md"), template("governance_readme.md")),
+        PlannedFile(Path("docs/templates/prioritization_policy.md"), template("prioritization_policy.md")),
         PlannedFile(Path("docs/templates/roadmap.md"), template("roadmap.md")),
         PlannedFile(Path("docs/templates/changelog.md"), template("changelog.md")),
         PlannedFile(Path("docs/templates/request.md"), template("request.md")),

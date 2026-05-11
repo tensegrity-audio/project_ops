@@ -16,6 +16,7 @@ from typing import Any
 
 
 DEFAULT_CONFIG = Path(".project_ops/config.json")
+REQUEST_ID_RE = re.compile(r"^[a-z0-9][a-z0-9_-]*$")
 PHASES = {
     "INTAKE",
     "FORM",
@@ -27,7 +28,15 @@ PHASES = {
     "POST_MORTEM",
     "COMPLETE",
 }
+READY_PHASES = {
+    "EXECUTION",
+    "VALIDATION",
+    "DOC_SYNC",
+    "POST_MORTEM",
+    "COMPLETE",
+}
 REQUIRED_KEYS = (
+    "Request ID",
     "Phase",
     "Status",
     "Steps Complete",
@@ -44,6 +53,91 @@ UPDATE_FIELDS = (
     "DocOps / Roadmap Updates (timestamped)",
 )
 TIMESTAMP_RE = re.compile(r"\b20\d{2}-\d{2}-\d{2}\b")
+PLACEHOLDER_RE = re.compile(r"<[^>\n]+>")
+UNRESOLVED_RE = re.compile(
+    r"^(?:tbd|todo|unknown|unresolved|pending|needs?\s+clarification|not\s+(?:set|filled)|missing)\b",
+    re.IGNORECASE,
+)
+READINESS_SUMMARY_KEYS = (
+    "Primary Scope",
+    "Secondary Scopes",
+    "Priority Score",
+    "Priority Lane",
+    "Ready State",
+    "Ready Gate",
+)
+READINESS_SECTION_FIELDS = {
+    "Milestone Synthesis": (
+        "Milestone ID",
+        "Milestone Name",
+        "Milestone Type",
+        "Source Requests",
+        "Outcome Statement (Done When)",
+        "KPI / Success Signal",
+        "Target Window",
+        "Dependency Gates",
+        "Contract Surfaces",
+        "Risk Posture",
+        "Goal",
+        "Non-Goals",
+        "Owner",
+    ),
+    "Roadmap Overlap Review": (
+        "Existing roadmap entries checked",
+        "Related active requests",
+        "Duplicate risk",
+        "Merge / split decision",
+        "Priority conflict",
+    ),
+    "Prioritization": (
+        "Policy Source",
+        "Priority Score",
+        "Priority Lane",
+        "Due Date / Timing Driver",
+        "Sort Key",
+        "Override",
+    ),
+    "Definition Of Ready": (
+        "Ready State",
+        "Ready Date",
+        "Ready Owner",
+        "Ready Exceptions",
+        "Decision Links",
+    ),
+    "Complexity": (
+        "Level",
+        "Predicted Count",
+        "Count Drivers",
+        "Drivers",
+        "Confidence",
+    ),
+    "Intake": (
+        "User Request",
+        "Context",
+        "Acceptance Signal",
+    ),
+    "Form": (
+        "Problem Statement",
+        "User / Operational Value",
+        "Change Type",
+        "Execution Mode",
+        "Acceptance Criteria",
+        "Constraints",
+        "Must Not Change",
+        "Allowed To Change",
+        "Inputs Needed",
+    ),
+    "Analysis": (
+        "Touch Map",
+        "Risks",
+        "Alternatives Considered",
+    ),
+    "Plan": (
+        "Steps",
+        "Validation Plan",
+        "Rollback / Stop Conditions",
+    ),
+}
 
 
 def repo_path(path: str | Path) -> Path:
@@ -94,6 +188,130 @@ def parse_state_summary(text: str) -> dict[str, str]:
         if match:
             summary[match.group(1).strip()] = match.group(2).strip()
     return summary
+
+
+def parse_markdown_sections(text: str) -> dict[str, str]:
+    sections: dict[str, list[str]] = {}
+    current: str | None = None
+    for line in text.splitlines():
+        match = re.match(r"^#{2,6}\s+(.+?)\s*$", line)
+        if match:
+            current = match.group(1).strip()
+            sections.setdefault(current, [])
+            continue
+        if current:
+            sections[current].append(line)
+    return {name: "\n".join(lines) for name, lines in sections.items()}
+
+
+def parse_bullet_fields(text: str) -> dict[str, str]:
+    fields: dict[str, str] = {}
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped.startswith("-"):
+            continue
+        match = re.match(r"^-\s*([^:]+):\s*(.*)$", stripped)
+        if match:
+            fields[match.group(1).strip()] = match.group(2).strip()
+    return fields
+
+
+def is_unresolved_value(value: str) -> bool:
+    stripped = value.strip()
+    if not stripped:
+        return True
+    if PLACEHOLDER_RE.search(stripped):
+        return True
+    if "??" in stripped:
+        return True
+    return bool(UNRESOLVED_RE.search(stripped))
+
+
+def is_blocked_decision_value(value: str | None) -> bool:
+    if not value:
+        return False
+    lowered = value.strip().lower()
+    if lowered in {"n/a", "na", "none"}:
+        return False
+    return "blocked" in lowered or "draft" in lowered or "proposed" in lowered or "pending" in lowered
+
+
+def add_readiness_field_error(errors: list[str], label: str, value: str | None) -> None:
+    if value is None:
+        errors.append(f"Missing readiness field before EXECUTION: {label}")
+    elif is_unresolved_value(value):
+        errors.append(f"Unresolved readiness field before EXECUTION: {label}")
+
+
+def audit_task_graph_readiness(section: str | None, errors: list[str]) -> None:
+    if section is None:
+        errors.append("Missing readiness section before EXECUTION: Task Graph")
+        return
+
+    data_rows: list[list[str]] = []
+    for line in section.splitlines():
+        stripped = line.strip()
+        if not stripped.startswith("|"):
+            continue
+        cells = [cell.strip() for cell in stripped.strip("|").split("|")]
+        if not cells:
+            continue
+        first_cell = cells[0].lower()
+        if first_cell == "task id" or all(set(cell) <= {"-", " "} for cell in cells):
+            continue
+        data_rows.append(cells)
+
+    if not data_rows:
+        errors.append("Missing readiness task graph before EXECUTION: Task Graph has no task rows")
+        return
+
+    for row_index, cells in enumerate(data_rows, start=1):
+        for cell in cells:
+            if is_unresolved_value(cell):
+                errors.append(f"Unresolved readiness task graph before EXECUTION: row {row_index}")
+                return
+
+
+def audit_definition_of_ready(summary: dict[str, str], text: str, errors: list[str]) -> None:
+    phase = summary.get("Phase", "").strip().upper()
+    if phase not in READY_PHASES:
+        return
+
+    for key in READINESS_SUMMARY_KEYS:
+        add_readiness_field_error(errors, f"State Summary -> {key}", summary.get(key))
+    if summary.get("Ready State", "").strip().lower() != "ready":
+        errors.append("Definition of Ready not satisfied before EXECUTION: State Summary -> Ready State must be Ready")
+
+    sections = parse_markdown_sections(text)
+    definition_fields: dict[str, str] = {}
+    for section_name, fields in READINESS_SECTION_FIELDS.items():
+        section = sections.get(section_name)
+        if section is None:
+            errors.append(f"Missing readiness section before EXECUTION: {section_name}")
+            continue
+        section_fields = parse_bullet_fields(section)
+        if section_name == "Definition Of Ready":
+            definition_fields = section_fields
+        for field in fields:
+            add_readiness_field_error(errors, f"{section_name} -> {field}", section_fields.get(field))
+        if section_name == "Definition Of Ready" and section_fields.get("Ready State", "").strip().lower() != "ready":
+            errors.append("Definition of Ready not satisfied before EXECUTION: Definition Of Ready -> Ready State must be Ready")
+    if summary.get("Ready State", "").strip().lower() == "ready" and is_blocked_decision_value(
+        definition_fields.get("Decision Links")
+    ):
+        errors.append("Definition of Ready not satisfied before EXECUTION: decision links still indicate a blocker")
+
+    audit_task_graph_readiness(sections.get("Task Graph"), errors)
+
+
+def audit_request_id(summary: dict[str, str], request_path: Path, errors: list[str]) -> None:
+    request_id = summary.get("Request ID", "").strip()
+    if not request_id:
+        return
+    if not REQUEST_ID_RE.match(request_id):
+        errors.append("Request ID must be lowercase filename-safe text")
+    if request_id != request_path.stem:
+        errors.append(f"Request ID mismatch: State Summary has '{request_id}' but filename stem is '{request_path.stem}'")
 
 
 def find_roadmap_block(roadmap_text: str, request_rel: str) -> dict[str, str]:
@@ -162,6 +380,7 @@ def audit_request(root: Path, config: dict[str, Any], request_path: Path) -> tup
     for key in REQUIRED_KEYS:
         if key not in summary:
             errors.append(f"Missing required State Summary field: {key}")
+    audit_request_id(summary, request_path, errors)
 
     updates = update_field(summary)
     if updates is None:
@@ -174,6 +393,8 @@ def audit_request(root: Path, config: dict[str, Any], request_path: Path) -> tup
     for key in ("Last Step Outcome", updates):
         if key and summary.get(key) and not TIMESTAMP_RE.search(summary[key]):
             errors.append(f"Missing timestamp in field '{key}'.")
+
+    audit_definition_of_ready(summary, text, errors)
 
     paths = config["paths"]
     validation = config.get("validation", {})
@@ -191,6 +412,7 @@ def audit_request(root: Path, config: dict[str, Any], request_path: Path) -> tup
             errors.append(f"Roadmap entry not found or missing State Summary block for Request Doc: {rel}")
         else:
             for key in (
+                "Request ID",
                 "Phase",
                 "Status",
                 "Steps Complete",
@@ -198,8 +420,14 @@ def audit_request(root: Path, config: dict[str, Any], request_path: Path) -> tup
                 "Last Step Outcome",
                 "Next Step",
                 "Dependencies / Overlap",
+                "Primary Scope",
+                "Secondary Scopes",
                 "Blocking Issues / Unknowns",
                 "Impact / Priority Notes",
+                "Priority Score",
+                "Priority Lane",
+                "Ready State",
+                "Ready Gate",
                 "Resume From",
             ):
                 if key in summary and key in roadmap_block and summary[key] != roadmap_block[key]:
@@ -213,8 +441,9 @@ def audit_request(root: Path, config: dict[str, Any], request_path: Path) -> tup
             errors.append(f"Missing {paths['changelog']}")
     else:
         changelog_text = changelog.read_text(encoding="utf-8", errors="replace")
-        if request_path.stem not in changelog_text:
-            warnings.append(f"No changelog entry found containing request id '{request_path.stem}'.")
+        request_id = summary.get("Request ID", request_path.stem)
+        if request_id not in changelog_text:
+            warnings.append(f"No changelog entry found containing request id '{request_id}'.")
 
     in_progress = repo_path(paths["inProgress"]).as_posix().rstrip("/")
     if phase == "COMPLETE" and rel.startswith(f"{in_progress}/"):

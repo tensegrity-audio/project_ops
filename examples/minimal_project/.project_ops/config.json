@@ -16,7 +16,8 @@
     "requestTemplate": "docs/roadmap/in_progress/_REQUEST_TEMPLATE.md",
     "projectOpsContract": "docs/project_ops.md",
     "templateRoot": "docs/templates",
-    "projectAdminBaselineTemplate": "docs/templates/project_admin_baseline.md"
+    "projectAdminBaselineTemplate": "docs/templates/project_admin_baseline.md",
+    "prioritizationPolicy": "docs/governance/prioritization_policy.md"
   },
   "scopeLabels": [
     "governance",
@@ -56,6 +57,18 @@
         "command": "python ../../tools/project_ops_audit.py --repo examples/minimal_project",
         "required": true,
         "description": "Audit the synthetic minimal adopter without rewriting files."
+      },
+      {
+        "name": "request-audit",
+        "command": "python ../../tools/project_ops_request_audit.py --repo examples/minimal_project --request-id <request_id>",
+        "required": true,
+        "description": "Audit one synthetic request artifact against local roadmap and changelog state."
+      },
+      {
+        "name": "roadmap-check",
+        "command": "python ../../tools/project_ops_roadmap.py --repo examples/minimal_project",
+        "required": true,
+        "description": "Check synthetic request artifacts against the roadmap without rewriting files."
       }
     ]
   },
@@ -69,7 +82,8 @@
     ],
     "recommendedFiles": [
       "docs/architecture/README.md",
-      "docs/governance/README.md"
+      "docs/governance/README.md",
+      "docs/governance/prioritization_policy.md"
     ],
     "initialDirectories": [
       "docs/architecture",

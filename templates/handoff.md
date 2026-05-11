@@ -3,6 +3,9 @@
 ```markdown
 # Handoff: <request_id or task name>
 
+- Request ID: <request_id>
+- Decision Links: <decision_id list or N/A>
+
 ## Current State
 
 - Phase: <phase>
@@ -14,6 +17,7 @@
 
 - Request Doc: <path or N/A>
 - Roadmap Entry: <path or N/A>
+- Changelog Entry: <path or N/A>
 - Related Docs: <paths or N/A>
 - Active Branch / Commit: <branch, commit, or N/A>
 

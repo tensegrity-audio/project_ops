@@ -11,6 +11,11 @@ Files:
 - `docs/reports/changelog.md`
 - `docs/architecture/README.md`
 - `docs/governance/README.md`
+- `docs/governance/prioritization_policy.md`
 - `docs/templates/**`
+
+`docs/project_ops.md` is the bridge document that explains how the local config,
+request template, roadmap, changelog, governance docs, architecture docs, and
+audit tools connect.
 
 Use this example as a starting point for a new adopter, then replace project identity, scope labels, required docs, privacy rules, validation commands, and roadmap contents with local values.

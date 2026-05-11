@@ -15,7 +15,8 @@
     "requestTemplate": "docs/roadmap/in_progress/_REQUEST_TEMPLATE.md",
     "projectOpsContract": "docs/project_ops.md",
     "templateRoot": "docs/templates",
-    "projectAdminBaselineTemplate": "docs/templates/project_admin_baseline.md"
+    "projectAdminBaselineTemplate": "docs/templates/project_admin_baseline.md",
+    "prioritizationPolicy": "docs/governance/prioritization_policy.md"
   },
   "scopeLabels": [
     "governance",
@@ -53,6 +54,18 @@
         "command": "python <path-to-project_ops>/tools/project_ops_audit.py --repo .",
         "required": true,
         "description": "Audit local Project Ops structure without rewriting files."
+      },
+      {
+        "name": "request-audit",
+        "command": "python <path-to-project_ops>/tools/project_ops_request_audit.py --repo . --request-id <request_id>",
+        "required": true,
+        "description": "Audit one request artifact against local roadmap and changelog state."
+      },
+      {
+        "name": "roadmap-check",
+        "command": "python <path-to-project_ops>/tools/project_ops_roadmap.py --repo .",
+        "required": true,
+        "description": "Check roadmap entries against local request artifacts without rewriting files."
       }
     ]
   },
@@ -71,7 +84,8 @@
     "recommendedFiles": [
       ".editorconfig",
       "LICENSE",
-      "SECURITY.md"
+      "SECURITY.md",
+      "docs/governance/prioritization_policy.md"
     ],
     "initialDirectories": [
       "docs/architecture",

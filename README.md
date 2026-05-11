@@ -41,6 +41,7 @@ project_ops/
     request.md
     roadmap_entry.md
     changelog_entry.md
+    prioritization_policy.md
     rfc_lite.md
     post_mortem.md
     phase_exit_audit.md
@@ -52,12 +53,16 @@ project_ops/
     project_ops_bootstrap.py
     project_ops_audit.py
     project_ops_request_audit.py
+    project_ops_roadmap.py
   docs/
     README.md
     concepts/
       project_ops_model.md
+      artifact_contract.md
     adopters/
       getting_started.md
+      integration_guide.md
+      agent_execution_contract.md
       configuration.md
       execution_process.md
   examples/
@@ -77,13 +82,18 @@ project_ops/
 
 ## Start Here
 
-1. Read [Getting Started](docs/adopters/getting_started.md).
-2. Review the [Project Admin Baseline](templates/project_admin_baseline.md).
-3. Copy or adapt [project_config.minimal.json](examples/project_config.minimal.json).
-4. Read the [Execution Process](docs/adopters/execution_process.md).
-5. Use [request.md](templates/request.md) for the first durable request.
-6. Run an audit-only check with `tools/project_ops_audit.py`.
-7. Audit request/roadmap/changelog parity with `tools/project_ops_request_audit.py`.
+1. Read the [Repo Component Map](docs/concepts/repo_component_map.md).
+2. Read the [Artifact Contract](docs/concepts/artifact_contract.md).
+3. Read the [Integration Guide](docs/adopters/integration_guide.md).
+4. Read the [Agent Execution Contract](docs/adopters/agent_execution_contract.md).
+5. Read [Getting Started](docs/adopters/getting_started.md).
+6. Review the [Project Admin Baseline](templates/project_admin_baseline.md).
+7. Copy or adapt [project_config.minimal.json](examples/project_config.minimal.json).
+8. Read the [Execution Process](docs/adopters/execution_process.md).
+9. Use [request.md](templates/request.md) for the first durable request.
+10. Run an audit-only check with `tools/project_ops_audit.py`.
+11. Audit request/roadmap/changelog parity with `tools/project_ops_request_audit.py`.
+12. Check all request/roadmap parity with `tools/project_ops_roadmap.py`.
 
 ## Core Ideas
 
@@ -100,6 +110,23 @@ Project Ops
 Adopting project
   -> local config, roadmap, changelog, request history, product docs
 ```
+
+## How The Subsystems Connect
+
+Project Ops is easiest to integrate when each subsystem has one clear handoff:
+
+| Subsystem | Handoff |
+| --- | --- |
+| `templates/` | Seed the files an adopter can copy, customize, or generate. |
+| `schemas/` | Define the config and optional request-state contracts that tools can trust. |
+| `.project_ops/config.json` in the adopter | Maps reusable Project Ops behavior to local paths, scope labels, privacy rules, and validation commands. |
+| `docs/project_ops.md` in the adopter | Gives contributors and agents the local operating loop. |
+| Artifact contract | Defines the stable Request IDs, Decision IDs, and State Summary fields that tie docs and tools together. |
+| Request, roadmap, changelog, and RFC-lite docs | Keep task state, planning, decisions, and history synchronized enough to resume work. |
+| `tools/` | Reads config and docs in audit-only mode so adoption can be checked without rewriting project files. |
+| `examples/` and `tests/` | Show and protect the public integration surface. |
+
+For a step-by-step integration path, read the [Integration Guide](docs/adopters/integration_guide.md).
 
 ## Bootstrap Promise
 
@@ -126,11 +153,13 @@ The first public version should focus on:
 - request artifact template
 - roadmap entry template
 - changelog entry template
+- prioritization policy template
 - RFC Lite template
 - post-mortem template
 - handoff template
 - project config schema
 - audit-only checks
+- readiness and roadmap parity checks
 - dry-run-first bootstrap behavior
 
 Automation should stay boring and inspectable. The first release should be understandable as plain Markdown, with tools that report or create only the baseline structure.

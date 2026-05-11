@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Added adopter integration guidance and subsystem connection docs for Project Ops.
+- Restored a detailed agent execution contract with phase gates, rewind rules, validation discipline, and stronger request/roadmap template parity.
+- Added prioritization policy templates, Definition of Ready checks, and a read-only roadmap parity checker.
+- Added an artifact contract for stable Request IDs, Decision IDs, and RFC-lite readiness links across roadmap, changelog, handoff, and post-mortem artifacts.
+
 ## v0.1.2 - 2026-05-05
 
 - Replaced raw GitHub schema identifiers with repo-owned, versioned Project Ops schema namespace IDs.
