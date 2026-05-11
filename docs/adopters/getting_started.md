@@ -17,6 +17,7 @@ For a new project, begin with:
 - `docs/reports/changelog.md`
 - `docs/architecture/README.md`
 - `docs/governance/README.md`
+- `docs/governance/prioritization_policy.md` when roadmap order matters
 
 The template at `templates/project_admin_baseline.md` explains which files are must-have, recommended, or optional.
 
@@ -25,10 +26,14 @@ The template at `templates/project_admin_baseline.md` explains which files are m
 1. Run `tools/project_ops_bootstrap.py --repo <project> --project-name "<Project>"` and review the dry-run plan.
 2. Re-run with `--apply` only after the create/skip plan looks right.
 3. Edit `.project_ops/config.json` for project-specific scope labels, required docs, privacy paths, and validation commands.
-4. Read `docs/project_ops.md` and `docs/adopters/execution_process.md`.
-5. Create the first request from `docs/roadmap/in_progress/_REQUEST_TEMPLATE.md`.
+4. Read generated `docs/project_ops.md`, then read this repo's `docs/adopters/execution_process.md` and `docs/adopters/agent_execution_contract.md`.
+5. Copy or adapt `templates/prioritization_policy.md` if the project will rank roadmap work.
+6. Create the first request from `docs/roadmap/in_progress/_REQUEST_TEMPLATE.md`.
+7. Run `tools/project_ops_roadmap.py --repo <project>` once request artifacts and roadmap entries exist.
 
 Existing repos can still adopt manually by copying templates. New repos should prefer the dry-run bootstrap command because it does not overwrite project-owned files.
+
+For an existing codebase with established docs, use the [Integration Guide](integration_guide.md) to map Project Ops onto local paths before moving files around.
 
 ## Configure The Project
 
@@ -51,6 +56,8 @@ See `examples/project_config.minimal.json` for a standalone minimal config and `
 ## Create The First Request
 
 Use `templates/request.md` for the first durable request artifact.
+Use `templates/prioritization_policy.md` to define how that request gets a
+Priority Score, Priority Lane, Sort Key, and Ready State before execution.
 
 Good first requests include:
 

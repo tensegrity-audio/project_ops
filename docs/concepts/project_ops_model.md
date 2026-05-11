@@ -10,13 +10,14 @@ Project Ops owns reusable patterns:
 - project config schema,
 - request artifact template,
 - roadmap entry template,
+- prioritization policy template,
 - changelog entry template,
 - RFC Lite decision template,
 - post-mortem template,
 - handoff template,
 - phase-exit audit template,
 - public/private boundary rules,
-- and dry-run-first extraction habits.
+- dry-run-first extraction habits,
 - audit-only readiness checks,
 - dry-run-first bootstrap behavior,
 - and starter docs for blank repositories.
@@ -51,11 +52,34 @@ If a file only makes sense for one project, it belongs with that project.
 
 If a file helps many projects create, validate, or maintain their own administrative structure, it may belong in Project Ops.
 
+For a component-level view of this repository, see [Repo Component Map](repo_component_map.md).
+For the ID and state fields that connect request, roadmap, changelog,
+decision, handoff, and post-mortem artifacts, see [Artifact Contract](artifact_contract.md).
+
+## The Integration Handshake
+
+Project Ops connects to an adopter repo through a small set of explicit
+contracts:
+
+1. Templates seed human-readable operating artifacts.
+2. `.project_ops/config.json` maps those artifacts to local paths and policies.
+3. Request docs carry current task state.
+4. Roadmap and changelog docs mirror planning and history.
+5. Audit tools read the config and artifacts without rewriting them.
+
+That handshake keeps Project Ops reusable while letting each adopter keep its
+own architecture, governance, validation commands, and project history.
+
 ## Naming
 
 Project Ops is the public umbrella name.
 
 Request lifecycle mechanics can still use phrases like request state, phase exit, audit, and handoff, but public seed files should lead with Project Ops terminology.
+
+Older adopter records may refer to `docops.md`. In Project Ops, the reusable
+replacement surfaces are [Agent Execution Contract](../adopters/agent_execution_contract.md),
+[Execution Process](../adopters/execution_process.md), and the local
+`docs/project_ops.md` generated from `templates/project_ops_contract.md`.
 
 ## Request State Sidecars
 

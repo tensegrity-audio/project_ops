@@ -18,6 +18,7 @@ Use this template as the default administrative skeleton for a fresh project. Th
 | `docs/reports/` | Must-have for Project Ops adopters | Holds changelog, audits, release notes, and post-mortems. |
 | `docs/architecture/` | Recommended | Holds system maps, boundary docs, contracts, and design decisions. |
 | `docs/governance/` | Recommended for multi-person or agent-assisted projects | Holds decision policy, RFC Lite rules, autonomy boundaries, ownership rules, and roadmap topology. |
+| `docs/governance/prioritization_policy.md` | Recommended for roadmap-driven projects | Defines scoring inputs, priority lanes, and Definition of Ready gates. |
 | `docs/templates/` | Recommended | Holds local copies of Project Ops templates for offline or project-specific adaptation. |
 | `.project_ops/config.json` | Must-have for Project Ops adopters | Defines project-local paths, scopes, privacy policy, validation gates, and adoption mode. |
 | `.github/pull_request_template.md` | Recommended for GitHub projects | Gives reviewers a consistent validation and documentation checklist. |
@@ -43,6 +44,7 @@ Use this template as the default administrative skeleton for a fresh project. Th
       README.md
     governance/
       README.md
+      prioritization_policy.md
     roadmap/
       roadmap.md
       in_progress/
@@ -63,6 +65,7 @@ Use this template as the default administrative skeleton for a fresh project. Th
 - What files are generated and should be ignored?
 - What validation command proves the project still works?
 - What docs must an agent or contributor read before making changes?
+- What priority scoring and Definition of Ready gates decide roadmap order?
 - What lifecycle artifacts should be local-private?
 - What release/versioning pattern will the project use?
 
@@ -144,6 +147,7 @@ Use this template as the default administrative skeleton for a fresh project. Th
 - `docs/reports/changelog.md` exists.
 - `docs/architecture/README.md` exists or the project records why architecture docs are deferred.
 - `docs/governance/README.md` exists or the project records why governance docs are deferred.
+- `docs/governance/prioritization_policy.md` exists or the project records why prioritization policy is deferred.
 - Required docs are listed in `.project_ops/config.json`.
 - Validation commands are listed in `.project_ops/config.json`.
 - Public/private boundary is explicit in `.project_ops/config.json`.
