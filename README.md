@@ -10,6 +10,7 @@ It provides a shared playbook for:
 - must-have documentation structure,
 - request intake and durable request artifacts,
 - roadmap and changelog discipline,
+- design alignment logs for principles, systems, processes, and explanatory notes (optional per adopter),
 - RFC Lite decision packets,
 - handoff and multi-agent coordination,
 - phase-exit audits,
@@ -18,7 +19,7 @@ It provides a shared playbook for:
 
 ## Status
 
-This repository contains generic seed material for project operations. It should not include adopter-specific roadmap history, reports, validation evidence, or product architecture.
+This repository contains generic seed material for project operations. It should not include adopter-specific roadmap history, reports, validation evidence, design principles, or product architecture.
 
 The first goal is a small, useful bootstrap kit:
 
@@ -30,17 +31,26 @@ project_ops/
   CHANGELOG.md
   SECURITY.md
   .gitignore
+  .github/workflows/
+    reusable-project-ops-audit.yml
+    reusable-request-audit.yml
+    pages.yml
   templates/
+    AGENTS.md
+    CLAUDE.md
+    dependabot.yml
     project_admin_baseline.md
     bootstrap_manifest.md
     project_ops_contract.md
     architecture_readme.md
+    design_alignment_log.md
     governance_readme.md
     roadmap.md
     changelog.md
     request.md
     roadmap_entry.md
     changelog_entry.md
+    prioritization_policy.md
     rfc_lite.md
     post_mortem.md
     phase_exit_audit.md
@@ -52,12 +62,16 @@ project_ops/
     project_ops_bootstrap.py
     project_ops_audit.py
     project_ops_request_audit.py
+    project_ops_roadmap.py
   docs/
     README.md
     concepts/
       project_ops_model.md
+      artifact_contract.md
     adopters/
       getting_started.md
+      integration_guide.md
+      agent_execution_contract.md
       configuration.md
       execution_process.md
   examples/
@@ -72,24 +86,57 @@ project_ops/
         roadmap/
         reports/
         architecture/
+          design_alignment_log.md
         governance/
 ```
 
 ## Start Here
 
-1. Read [Getting Started](docs/adopters/getting_started.md).
-2. Review the [Project Admin Baseline](templates/project_admin_baseline.md).
-3. Copy or adapt [project_config.minimal.json](examples/project_config.minimal.json).
-4. Read the [Execution Process](docs/adopters/execution_process.md).
-5. Use [request.md](templates/request.md) for the first durable request.
-6. Run an audit-only check with `tools/project_ops_audit.py`.
-7. Audit request/roadmap/changelog parity with `tools/project_ops_request_audit.py`.
+1. Read the [Repo Component Map](docs/concepts/repo_component_map.md).
+2. Read the [Artifact Contract](docs/concepts/artifact_contract.md).
+3. Read the [Integration Guide](docs/adopters/integration_guide.md).
+4. Read the [Agent Execution Contract](docs/adopters/agent_execution_contract.md).
+5. Read [Getting Started](docs/adopters/getting_started.md).
+6. Review the [Project Admin Baseline](templates/project_admin_baseline.md).
+7. Copy or adapt [project_config.minimal.json](examples/project_config.minimal.json).
+8. Read the [Execution Process](docs/adopters/execution_process.md).
+9. Use [request.md](templates/request.md) for the first durable request.
+10. Seed [design_alignment_log.md](templates/design_alignment_log.md) if the project wants to record principles and rationale.
+11. Run an audit-only check with `tools/project_ops_audit.py`.
+12. Audit request readiness and roadmap/changelog parity with `tools/project_ops_request_audit.py`.
+13. Check all request/roadmap parity with `tools/project_ops_roadmap.py`.
+
+## Use From CI
+
+Adopters do not copy the tools or the workflows. They call the reusable workflows at a pinned tag:
+
+```yaml
+# .github/workflows/project-ops.yml in the adopter
+name: Project Ops
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  audit:
+    uses: tensegrity-audio/project_ops/.github/workflows/reusable-project-ops-audit.yml@v0.2.0
+  request-audit:
+    uses: tensegrity-audio/project_ops/.github/workflows/reusable-request-audit.yml@v0.2.0
+    with:
+      request-path-regex: '^docs/roadmap/(in_progress|completed)/.*\.md$'
+```
+
+Both workflows are read-only. Inputs: `project-ops-ref` (default `v0.2.0`), `python-version`, `config`, `repo-path`, and for the request audit `request-path-regex` and `exclude-regex`. Moving to a new Project Ops version means changing the `@v…` on those lines and the `$schema` in `.project_ops/config.json`.
+
+Schemas are published for every tag at `https://tensegrity-audio.github.io/project_ops/schemas/<tag>/`, and the current `main` at `schemas/latest/`.
 
 ## Core Ideas
 
 Project Ops is not a project manager and not a replacement for the work itself. It is the reusable administrative layer around the work.
 
-Each adopting project keeps its own roadmap, reports, architecture, product decisions, validation evidence, and private history.
+Each adopting project keeps its own roadmap, reports, architecture, design alignment log, product decisions, validation evidence, and private history.
 
 Project Ops provides the common structure:
 
@@ -98,8 +145,25 @@ Project Ops
   -> templates, schemas, validators, bootstrap docs, workflow rules
 
 Adopting project
-  -> local config, roadmap, changelog, request history, product docs
+  -> local config, roadmap, changelog, design alignment, request history, product docs
 ```
+
+## How The Subsystems Connect
+
+Project Ops is easiest to integrate when each subsystem has one clear handoff:
+
+| Subsystem | Handoff |
+| --- | --- |
+| `templates/` | Seed the files an adopter can copy, customize, or generate. |
+| `schemas/` | Define the config and optional request-state contracts that tools can trust. |
+| `.project_ops/config.json` in the adopter | Maps reusable Project Ops behavior to local paths, scope labels, privacy rules, and validation commands. |
+| `docs/project_ops.md` in the adopter | Gives contributors and agents the local operating loop. |
+| Artifact contract | Defines the stable Request IDs, Decision IDs, and State Summary fields that tie docs and tools together. |
+| Request, roadmap, changelog, design alignment, and RFC-lite docs | Keep task state, planning, rationale, decisions, and history synchronized enough to resume work. |
+| `tools/` | Reads config and docs in audit-only mode so adoption can be checked without rewriting project files. |
+| `examples/` and `tests/` | Show and protect the public integration surface. |
+
+For a step-by-step integration path, read the [Integration Guide](docs/adopters/integration_guide.md).
 
 ## Bootstrap Promise
 
@@ -111,6 +175,7 @@ A fresh project should be able to use Project Ops to answer:
 - What is public, private, or internal?
 - What validation proves the project is healthy?
 - What should contributors or agents read before changing things?
+- What principles, systems, elements, and processes explain why the project is built this way?
 
 ## Initial Scope
 
@@ -126,11 +191,14 @@ The first public version should focus on:
 - request artifact template
 - roadmap entry template
 - changelog entry template
+- design alignment log template
+- prioritization policy template
 - RFC Lite template
 - post-mortem template
 - handoff template
 - project config schema
 - audit-only checks
+- readiness and roadmap parity checks
 - dry-run-first bootstrap behavior
 
 Automation should stay boring and inspectable. The first release should be understandable as plain Markdown, with tools that report or create only the baseline structure.

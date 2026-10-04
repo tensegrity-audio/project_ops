@@ -1,0 +1,76 @@
+name: Publish schemas
+
+# Serves every released schema at a stable URL, so adopter configs can keep
+# pointing at the version they were written against:
+#
+#   https://tensegrity-audio.github.io/project_ops/schemas/<tag>/project_config.schema.json
+#   https://tensegrity-audio.github.io/project_ops/schemas/latest/project_config.schema.json
+#
+# Each v* tag's own schemas/ directory is published under its tag name; main is
+# published as "latest".
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Assemble the site
+        shell: bash
+        run: |
+          set -euo pipefail
+          site=_site
+          mkdir -p "$site/schemas/latest"
+          cp schemas/*.json "$site/schemas/latest/"
+          for tag in $(git tag --list 'v*'); do
+            if git cat-file -e "$tag:schemas" 2>/dev/null; then
+              mkdir -p "$site/schemas/$tag"
+              git archive "$tag" schemas | tar -x -C "$site/schemas/$tag" --strip-components=1
+            fi
+          done
+          {
+            echo "<!doctype html><meta charset=utf-8><title>Project Ops schemas</title>"
+            echo "<h1>Project Ops schemas</h1><ul>"
+            for dir in "$site"/schemas/*/; do
+              name=$(basename "$dir")
+              for f in "$dir"*.json; do
+                rel="schemas/$name/$(basename "$f")"
+                echo "<li><a href=\"$rel\">$rel</a></li>"
+              done
+            done
+            echo "</ul>"
+          } > "$site/index.html"
+          find "$site" -type f | sort
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

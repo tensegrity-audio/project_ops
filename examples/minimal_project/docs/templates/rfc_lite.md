@@ -3,11 +3,14 @@
 ```markdown
 # RFC Lite: <decision title>
 
+- Decision ID: <decision_id>
 - Status: Draft / Proposed / Accepted / Rejected / Superseded
 - Decision Needed By: <date or milestone>
 - Owner: <person, team, or N/A>
 - Scope: <project-config scope label>
-- Related Requests: <ids or N/A>
+- Related Request IDs: <request_id list or N/A>
+- Blocks Ready Gate: Yes / No
+- Ready Gate Impact: <what is blocked or N/A>
 
 ## Problem
 
@@ -37,4 +40,10 @@
 ## Decision
 
 <Accepted option, date, and decision-maker. Leave blank while draft.>
+
+## Traceability
+
+- Request Artifacts: <paths or N/A>
+- Roadmap Entries: <paths/headings or N/A>
+- Changelog Entries: <paths/headings or N/A>
 ```

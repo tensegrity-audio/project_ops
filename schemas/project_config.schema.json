@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://tensegrity-audio.github.io/project_ops/schemas/v0.1.2/project_config.schema.json",
+  "$id": "https://tensegrity-audio.github.io/project_ops/schemas/v0.2.0/project_config.schema.json",
   "title": "Project Ops Project Config",
   "description": "Project-local adapter config for running reusable Project Ops tooling without hardcoded repo paths or scope labels.",
   "type": "object",
@@ -48,7 +48,9 @@
         "requestTemplate": { "$ref": "#/$defs/relativePath" },
         "projectOpsContract": { "$ref": "#/$defs/relativePath" },
         "templateRoot": { "$ref": "#/$defs/relativePath" },
-        "projectAdminBaselineTemplate": { "$ref": "#/$defs/relativePath" }
+        "projectAdminBaselineTemplate": { "$ref": "#/$defs/relativePath" },
+        "prioritizationPolicy": { "$ref": "#/$defs/relativePath" },
+        "designAlignmentLog": { "$ref": "#/$defs/relativePath" }
       },
       "additionalProperties": {
         "$ref": "#/$defs/relativePath"
@@ -92,6 +94,10 @@
         "requireChangelog": { "type": "boolean" },
         "requireRoadmapParity": { "type": "boolean" },
         "allowEmptyRoadmap": { "type": "boolean" },
+        "requireDesignAlignment": {
+          "type": "boolean",
+          "description": "When true, request audits require a filled Design Alignment section before EXECUTION. Defaults to false; the section is audited only if present."
+        },
         "dryRunByDefault": { "type": "boolean" },
         "commands": {
           "type": "array",

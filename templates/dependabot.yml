@@ -1,0 +1,12 @@
+# Keeps pinned GitHub Actions and reusable workflow versions current.
+# Add a second entry for the package ecosystem the repository uses
+# (npm, pip, cargo, …) once it has a lockfile.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]

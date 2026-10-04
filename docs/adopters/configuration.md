@@ -4,6 +4,11 @@ Project Ops is configured per adopter. The framework should not hardcode project
 
 Use `.project_ops/config.json` in the adopter repo. A standalone example lives at `examples/project_config.minimal.json`.
 
+The config is the adapter between Project Ops and the adopter. Templates and
+docs can use defaults, but tools should discover the real roadmap, request,
+changelog, design alignment, governance, privacy, and validation surfaces from
+this file.
+
 ## Minimal Shape
 
 ```json
@@ -24,7 +29,9 @@ Use `.project_ops/config.json` in the adopter repo. A standalone example lives a
     "requestTemplate": "docs/roadmap/in_progress/_REQUEST_TEMPLATE.md",
     "projectOpsContract": "docs/project_ops.md",
     "templateRoot": "docs/templates",
-    "projectAdminBaselineTemplate": "docs/templates/project_admin_baseline.md"
+    "projectAdminBaselineTemplate": "docs/templates/project_admin_baseline.md",
+    "prioritizationPolicy": "docs/governance/prioritization_policy.md",
+    "designAlignmentLog": "docs/architecture/design_alignment_log.md"
   },
   "scopeLabels": [
     "governance",
@@ -42,6 +49,7 @@ Use `.project_ops/config.json` in the adopter repo. A standalone example lives a
     "docs/roadmap/roadmap.md",
     "docs/roadmap/in_progress/_REQUEST_TEMPLATE.md",
     "docs/architecture/README.md",
+    "docs/architecture/design_alignment_log.md",
     "docs/governance/README.md",
     "docs/reports/changelog.md"
   ],
@@ -56,6 +64,7 @@ Use `.project_ops/config.json` in the adopter repo. A standalone example lives a
   "validation": {
     "requireChangelog": true,
     "requireRoadmapParity": true,
+    "requireDesignAlignment": false,
     "allowEmptyRoadmap": true,
     "dryRunByDefault": true,
     "commands": [
@@ -70,6 +79,12 @@ Use `.project_ops/config.json` in the adopter repo. A standalone example lives a
         "command": "python <path-to-project_ops>/tools/project_ops_request_audit.py --repo . --request-id <request_id>",
         "required": true,
         "description": "Audit one request artifact against local roadmap and changelog state."
+      },
+      {
+        "name": "roadmap-check",
+        "command": "python <path-to-project_ops>/tools/project_ops_roadmap.py --repo .",
+        "required": true,
+        "description": "Check roadmap entries against local request artifacts without rewriting files."
       }
     ]
   },
@@ -83,12 +98,14 @@ Use `.project_ops/config.json` in the adopter repo. A standalone example lives a
       "docs/project_ops.md",
       "docs/roadmap/roadmap.md",
       "docs/roadmap/in_progress/_REQUEST_TEMPLATE.md",
-      "docs/reports/changelog.md"
+      "docs/reports/changelog.md",
+      "docs/architecture/design_alignment_log.md"
     ],
     "recommendedFiles": [
       ".editorconfig",
       "LICENSE",
-      "SECURITY.md"
+      "SECURITY.md",
+      "docs/governance/prioritization_policy.md"
     ],
     "initialDirectories": [
       "docs/architecture",
@@ -110,10 +127,19 @@ Before adopting Project Ops, decide:
 - what docs are required before work starts,
 - which scope labels are meaningful,
 - where request artifacts live,
+- where prioritization policy and Ready gate rules live,
+- where the design alignment log lives,
 - where private notes and local evidence are allowed,
 - which validation command proves the repo is healthy,
 - which files and directories bootstrap must create,
 - and when audits should warn versus fail.
+
+## Optional Sections
+
+`validation.requireDesignAlignment` (default `false`) controls whether a request
+must carry a filled Design Alignment section before `EXECUTION`. Leave it off for
+projects that do not keep a design alignment log. When the section is present it
+is audited regardless of the flag, so a half-filled section still fails.
 
 ## Validation Commands
 
@@ -131,6 +157,10 @@ Each command has:
 Use `bootstrap.requiredFiles`, `bootstrap.recommendedFiles`, and `bootstrap.initialDirectories` to make the starter structure auditable. `tools/project_ops_bootstrap.py` creates a default version of this structure; `tools/project_ops_audit.py` checks whether it still exists.
 
 Use `tools/project_ops_request_audit.py` when a repository wants Project Ops to verify request state, roadmap parity, and changelog breadcrumbs from outside the adopter repo. The adopter still owns its roadmap and history; Project Ops owns the reusable audit behavior.
+
+Use `tools/project_ops_roadmap.py` when a repository wants a read-only check
+across all configured request artifacts. It verifies that each request has a
+roadmap entry and that State Summary fields match.
 
 ## Public Examples
 

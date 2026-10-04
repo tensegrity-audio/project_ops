@@ -1,0 +1,74 @@
+name: Project Ops audit (reusable)
+
+# Call from an adopter repo:
+#
+#   jobs:
+#     project-ops:
+#       uses: tensegrity-audio/project_ops/.github/workflows/reusable-project-ops-audit.yml@v0.2.0
+#       with:
+#         project-ops-ref: v0.2.0
+#
+# Runs the read-only structure audit and the roadmap parity check against the
+# calling repository. Nothing is written.
+
+on:
+  workflow_call:
+    inputs:
+      project-ops-ref:
+        description: Tag or SHA of tensegrity-audio/project_ops to run the tools from.
+        type: string
+        required: false
+        default: v0.2.0
+      python-version:
+        description: Python version for the tools.
+        type: string
+        required: false
+        default: "3.12"
+      roadmap-check:
+        description: Also run project_ops_roadmap.py across every request artifact.
+        type: boolean
+        required: false
+        default: true
+      config:
+        description: Adopter config path relative to the adopter root.
+        type: string
+        required: false
+        default: .project_ops/config.json
+      repo-path:
+        description: Adopter root relative to the checkout, for monorepos or examples.
+        type: string
+        required: false
+        default: "."
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out the adopter repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Check out Project Ops
+        uses: actions/checkout@v4
+        with:
+          repository: tensegrity-audio/project_ops
+          ref: ${{ inputs.project-ops-ref }}
+          path: .project-ops-framework
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python-version }}
+
+      - name: Audit Project Ops structure
+        run: python .project-ops-framework/tools/project_ops_audit.py --repo "${{ inputs.repo-path }}" --config "${{ inputs.config }}"
+
+      - name: Check roadmap parity across all requests
+        if: ${{ inputs.roadmap-check }}
+        run: python .project-ops-framework/tools/project_ops_roadmap.py --repo "${{ inputs.repo-path }}" --config "${{ inputs.config }}"

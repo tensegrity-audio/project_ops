@@ -3,6 +3,9 @@
 ```markdown
 ## Post-Mortem
 
+- Request ID: <request_id>
+- Decision Links: <decision_id list or N/A>
+
 ### Outcome
 
 - Final Status: <Complete, Deferred, Cancelled, Superseded>
@@ -27,9 +30,13 @@
 
 - <repeatable change to the workflow>
 
+### Design Alignment Lessons
+
+- <principle, system, element, process, or teaching note to update, or N/A>
+
 ### Follow-Ups
 
-- <request id, issue link, roadmap item, or N/A>
+- <request id, decision id, issue link, roadmap item, or N/A>
 ```
 
 ## Public-Safety Rule

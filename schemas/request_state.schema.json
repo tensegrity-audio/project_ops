@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://tensegrity-audio.github.io/project_ops/schemas/v0.1.2/request_state.schema.json",
+  "$id": "https://tensegrity-audio.github.io/project_ops/schemas/v0.2.0/request_state.schema.json",
   "title": "Project Ops Request State",
   "description": "Portable state sidecar for a Project Ops managed request artifact.",
   "type": "object",

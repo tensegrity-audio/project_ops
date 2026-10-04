@@ -2,11 +2,14 @@
 
 ```markdown
 Phase Exit Audit
+- Request ID present and stable: Yes / No / N/A
 - Phase requirements satisfied: Yes / No
+- Decision blockers resolved or excepted: Yes / No / N/A
 - Request artifact updated: Yes / No / N/A
 - State Summary updated: Yes / No / N/A
 - Roadmap entry updated: Yes / No / N/A
 - Changelog entry updated: Yes / No / N/A
+- Design alignment log updated: Yes / No / N/A
 - Related docs updated: Yes / No / N/A
 - Validation evidence recorded: Yes / No / N/A
 - Handoff context current: Yes / No / N/A
