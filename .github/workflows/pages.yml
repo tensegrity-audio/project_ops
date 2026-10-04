@@ -7,12 +7,14 @@ name: Publish schemas
 #   https://tensegrity-audio.github.io/project_ops/schemas/latest/project_config.schema.json
 #
 # Each v* tag's own schemas/ directory is published under its tag name; main is
-# published as "latest".
+# published as "latest". Runs on pushes to main and when a release is published
+# (after its tag exists), so two builds never race.
 
 on:
   push:
     branches: [main]
-    tags: ["v*"]
+  release:
+    types: [published]
   workflow_dispatch:
 
 permissions:
