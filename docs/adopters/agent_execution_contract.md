@@ -17,8 +17,10 @@ Before changing files, the agent should read:
 3. The active request artifact, if one exists.
 4. The configured roadmap and changelog paths.
 5. The local prioritization policy if roadmap order is governed by one.
-6. RFC-lite decisions linked by the request or roadmap entry.
-7. Any architecture, governance, or validation docs listed in the request,
+6. The design alignment log when the request may change principles,
+   architecture, systems, elements, processes, or teaching notes.
+7. RFC-lite decisions linked by the request or roadmap entry.
+8. Any architecture, governance, or validation docs listed in the request,
    config, roadmap, or local Project Ops contract.
 
 If those docs disagree, prefer the project-local config for paths and prefer the
@@ -37,6 +39,8 @@ request artifact for current state. Record the conflict before proceeding.
   from it.
 - Keep request, roadmap, and changelog state aligned when the project requires
   parity.
+- Do not leave design-relevant choices implicit when they affect project
+  principles, architecture, systems, processes, or teaching value.
 - Verify command syntax before citing a command as validation evidence.
 - Record validation that was not run, including the reason and waiver path.
 - Stop when unknowns, blockers, destructive operations, privacy risk, or
@@ -72,11 +76,11 @@ exit criteria are satisfied and the State Summary says what happens next.
 | --- | --- | --- |
 | `INTAKE` | Capture the user request, context, owner, and acceptance signal. | Request artifact exists and ambiguity is listed or resolved. |
 | `FORM` | Define scope, non-goals, constraints, unknowns, and acceptance criteria. | Unknowns are empty or explicitly blocked with a next action. |
-| `ANALYSIS` | Inspect affected docs, code, configs, schemas, interfaces, and active roadmap overlap. | Touch map, risks, alternatives, and complexity are recorded. |
+| `ANALYSIS` | Inspect affected docs, code, configs, schemas, interfaces, design principles, and active roadmap overlap. | Touch map, risks, alternatives, design alignment, and complexity are recorded. |
 | `PLAN` | Build an ordered task graph, validation contract, rollback path, and stop conditions. | Steps are reviewable and stay inside the touch map. |
 | `EXECUTION` | Complete the approved steps without scope drift. | Step outcomes are recorded and the work slice is complete. |
 | `VALIDATION` | Run required commands, manual checks, or record approved waivers. | Evidence is reproducible or the gap is explicit. |
-| `DOC_SYNC` | Sync request, roadmap, changelog, architecture, governance, and related docs. | Durable docs match the actual work. |
+| `DOC_SYNC` | Sync request, roadmap, changelog, design alignment log, architecture, governance, and related docs. | Durable docs match the actual work. |
 | `POST_MORTEM` | Capture lessons, rework, residual risks, and follow-ups. | Lessons are actionable and linked to follow-up work when needed. |
 | `COMPLETE` | Archive or close the request. | Completed path, roadmap, changelog, and final summary agree. |
 
@@ -91,6 +95,7 @@ Phase Exit Audit
 - State Summary updated: Yes / No / N/A
 - Roadmap entry updated: Yes / No / N/A
 - Changelog entry updated: Yes / No / N/A
+- Design alignment log updated: Yes / No / N/A
 - Related docs updated: Yes / No / N/A
 - Validation evidence recorded: Yes / No / N/A
 - Handoff context current: Yes / No / N/A
@@ -188,6 +193,18 @@ Touch Map
 - Related requests:
 ```
 
+Record design alignment when the work may affect how the project should be
+understood:
+
+```markdown
+Design Alignment
+- Guiding Principles Affected:
+- Systems / Elements / Processes Used:
+- Alignment Rationale:
+- Design Alignment Log Update:
+- Plain-Language Explanation:
+```
+
 If analysis reveals new surfaces, update FORM and the touch map before
 continuing. If the new surfaces change the request's intent, rewind to FORM.
 
@@ -232,8 +249,8 @@ to compute:
 
 Definition of Ready is satisfied only when acceptance criteria, scope
 boundaries, owner or decision path, dependencies, touch map, validation plan,
-privacy posture, priority fields, stop conditions, and blockers are recorded or
-explicitly excepted. If the Ready State is `Not Ready`, `Blocked`, or
+design and teaching impact, privacy posture, priority fields, stop conditions,
+and blockers are recorded or explicitly excepted. If the Ready State is `Not Ready`, `Blocked`, or
 `Deferred`, do not enter EXECUTION until the next action is resolved or the
 project records an exception.
 
@@ -321,6 +338,8 @@ Check:
 - Request artifact State Summary and execution notes.
 - Roadmap entry and request path.
 - Changelog entry.
+- Design alignment log when guiding principles, systems, elements, processes,
+  architecture, or teaching notes changed.
 - RFC-lite decision links when decisions affected readiness, scope, or plan.
 - Architecture docs for system behavior changes.
 - Governance docs for process or decision rule changes.
@@ -340,7 +359,7 @@ Record:
 - Predicted versus actual complexity.
 - Rework, failed assumptions, or validation gaps.
 - What worked.
-- What should change in Project Ops or the adopter overlay.
+- What should change in Project Ops, the adopter overlay, or the design alignment log.
 - Follow-up request IDs or roadmap entries.
 
 If there were no issues, say so explicitly.
@@ -354,6 +373,8 @@ Before closing:
 - Move the request artifact to the configured completed path when applicable.
 - Ensure the roadmap points to the final request path.
 - Ensure the changelog includes the request ID and final status.
+- Ensure the design alignment log includes the request ID when design
+  principles, systems, elements, processes, or teaching notes changed.
 - Ensure linked decision IDs still resolve or are recorded as historical.
 - Record final validation status.
 - Leave a final summary with rollback guidance and open follow-ups.

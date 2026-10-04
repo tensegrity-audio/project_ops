@@ -81,6 +81,7 @@ State Summary
 | Dependencies and overlap are checked | <request ids, docs, code areas, or N/A> | <Met, Missing, Exception, N/A> |
 | Required decisions are resolved | <RFC Lite decision IDs, statuses, or N/A> | <Met, Missing, Exception, N/A> |
 | Touch map is bounded | <files, docs, systems, or N/A> | <Met, Missing, Exception, N/A> |
+| Design impact is checked | <principles, systems, design log entry, or N/A> | <Met, Missing, Exception, N/A> |
 | Validation plan is named | <commands, manual checks, or waiver path> | <Met, Missing, Exception, N/A> |
 | Privacy and safety posture is checked | <public/private notes or N/A> | <Met, Missing, Exception, N/A> |
 | Priority score and lane are computed | <score, lane, due date, override> | <Met, Missing, Exception, N/A> |
@@ -119,6 +120,16 @@ State Summary
 - Risks: <risks or N/A>
 - Alternatives Considered: <alternatives or N/A>
 
+## Design Alignment
+
+Optional unless `validation.requireDesignAlignment` is true in `.project_ops/config.json`. When present it is audited.
+
+- Guiding Principles Affected: <principle IDs, names, or N/A>
+- Systems / Elements / Processes Used: <tools, patterns, modules, workflows, or N/A>
+- Alignment Rationale: <how these choices reinforce or revise the principles>
+- Design Alignment Log Update: <docs/architecture/design_alignment_log.md entry, N/A, or exception>
+- Plain-Language Explanation: <plain-language explanation or N/A>
+
 ## Plan
 
 - Steps: <ordered implementation or documentation steps>
@@ -147,6 +158,7 @@ State Summary
 
 - Roadmap updated: Yes / No / N/A
 - Changelog updated: Yes / No / N/A
+- Design alignment log updated: Yes / No / N/A
 - Related docs updated: Yes / No / N/A
 - Links checked: Yes / No / N/A
 
@@ -158,6 +170,7 @@ State Summary
 - State Summary updated: Yes / No / N/A
 - Roadmap entry updated: Yes / No / N/A
 - Changelog entry updated: Yes / No / N/A
+- Design alignment log updated: Yes / No / N/A
 - Related docs updated: Yes / No / N/A
 - Validation evidence recorded: Yes / No / N/A
 - Handoff context current: Yes / No / N/A

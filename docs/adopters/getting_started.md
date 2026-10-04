@@ -16,6 +16,7 @@ For a new project, begin with:
 - `docs/roadmap/completed/`
 - `docs/reports/changelog.md`
 - `docs/architecture/README.md`
+- `docs/architecture/design_alignment_log.md`
 - `docs/governance/README.md`
 - `docs/governance/prioritization_policy.md` when roadmap order matters
 
@@ -28,8 +29,9 @@ The template at `templates/project_admin_baseline.md` explains which files are m
 3. Edit `.project_ops/config.json` for project-specific scope labels, required docs, privacy paths, and validation commands.
 4. Read generated `docs/project_ops.md`, then read this repo's `docs/adopters/execution_process.md` and `docs/adopters/agent_execution_contract.md`.
 5. Copy or adapt `templates/prioritization_policy.md` if the project will rank roadmap work.
-6. Create the first request from `docs/roadmap/in_progress/_REQUEST_TEMPLATE.md`.
-7. Run `tools/project_ops_roadmap.py --repo <project>` once request artifacts and roadmap entries exist.
+6. Seed `docs/architecture/design_alignment_log.md` with the first guiding principles and plain-language system notes.
+7. Create the first request from `docs/roadmap/in_progress/_REQUEST_TEMPLATE.md`.
+8. Run `tools/project_ops_roadmap.py --repo <project>` once request artifacts and roadmap entries exist.
 
 Existing repos can still adopt manually by copying templates. New repos should prefer the dry-run bootstrap command because it does not overwrite project-owned files.
 
@@ -43,6 +45,7 @@ A minimal `.project_ops/config.json` should define:
 
 - project id, name, and role,
 - roadmap, changelog, request, and governance paths,
+- design alignment log path,
 - scope labels,
 - required docs,
 - privacy rules,
@@ -77,6 +80,7 @@ Project Ops supplies structure. The adopter keeps the actual history:
 - reports,
 - validation evidence,
 - architecture decisions,
+- design principles and plain-language architecture notes,
 - and release notes.
 
 Publish examples only after sanitizing them.

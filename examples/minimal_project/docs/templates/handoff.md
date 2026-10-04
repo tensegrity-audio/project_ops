@@ -18,6 +18,7 @@
 - Request Doc: <path or N/A>
 - Roadmap Entry: <path or N/A>
 - Changelog Entry: <path or N/A>
+- Design Alignment Log Entry: <path/entry id or N/A>
 - Related Docs: <paths or N/A>
 - Active Branch / Commit: <branch, commit, or N/A>
 

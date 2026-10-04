@@ -30,6 +30,10 @@
 
 - <repeatable change to the workflow>
 
+### Design Alignment Lessons
+
+- <principle, system, element, process, or teaching note to update, or N/A>
+
 ### Follow-Ups
 
 - <request id, decision id, issue link, roadmap item, or N/A>

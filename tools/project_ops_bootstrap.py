@@ -15,7 +15,7 @@ from pathlib import Path
 
 
 PROJECT_OPS_ROOT = Path(__file__).resolve().parents[1]
-SCHEMA_ID = "https://tensegrity-audio.github.io/project_ops/schemas/v0.1.2/project_config.schema.json"
+SCHEMA_ID = "https://tensegrity-audio.github.io/project_ops/schemas/v0.2.0/project_config.schema.json"
 
 
 @dataclass(frozen=True)
@@ -50,6 +50,7 @@ def render_config(project_id: str, project_name: str, role: str, visibility: str
             "templateRoot": "docs/templates",
             "projectAdminBaselineTemplate": "docs/templates/project_admin_baseline.md",
             "prioritizationPolicy": "docs/governance/prioritization_policy.md",
+            "designAlignmentLog": "docs/architecture/design_alignment_log.md",
         },
         "scopeLabels": ["governance", "docs", "runtime", "tests"],
         "requiredDocs": [
@@ -63,6 +64,7 @@ def render_config(project_id: str, project_name: str, role: str, visibility: str
             "docs/roadmap/in_progress/_REQUEST_TEMPLATE.md",
             "docs/reports/changelog.md",
             "docs/architecture/README.md",
+            "docs/architecture/design_alignment_log.md",
             "docs/governance/README.md",
         ],
         "privacy": {
@@ -107,8 +109,12 @@ def render_config(project_id: str, project_name: str, role: str, visibility: str
                 "docs/roadmap/roadmap.md",
                 "docs/roadmap/in_progress/_REQUEST_TEMPLATE.md",
                 "docs/reports/changelog.md",
+                "docs/architecture/design_alignment_log.md",
             ],
             "recommendedFiles": [
+                "AGENTS.md",
+                "CLAUDE.md",
+                ".github/dependabot.yml",
                 ".editorconfig",
                 "LICENSE",
                 "SECURITY.md",
@@ -154,10 +160,11 @@ Local operating files:
 - `docs/roadmap/roadmap.md` records active and completed work.
 - `docs/roadmap/in_progress/_REQUEST_TEMPLATE.md` defines request artifacts.
 - `docs/reports/changelog.md` records meaningful project changes.
+- `docs/architecture/design_alignment_log.md` records guiding principles, design-relevant systems and processes, and plain-language rationale.
 - `docs/governance/README.md` explains local decision rules.
 - `docs/governance/prioritization_policy.md` explains roadmap scoring and readiness gates when used.
 
-Project Ops provides reusable structure. This repository owns its own product decisions, roadmap, reports, and validation evidence.
+Project Ops provides reusable structure. This repository owns its own product decisions, design alignment log, roadmap, reports, and validation evidence.
 
 ## Local Subsystem Connections
 
@@ -169,7 +176,8 @@ Project Ops provides reusable structure. This repository owns its own product de
 | `docs/roadmap/roadmap.md` | Request artifacts and changelog. | Makes active and completed work visible in one planning surface. |
 | `docs/reports/changelog.md` | Roadmap, releases, and closeout notes. | Records meaningful outcomes after the work changes. |
 | `docs/architecture/` | Requests and implementation work. | Holds project-specific system maps and contracts. |
-| `docs/governance/` | Config, prioritization, validation, and review policy. | Explains local decision rules, readiness gates, and ownership boundaries.
+| `docs/architecture/design_alignment_log.md` | Requests, RFC-lite decisions, architecture maps, and teaching notes. | Explains the guiding principles, chosen systems, and why the project is built this way. |
+| `docs/governance/` | Config, prioritization, validation, and review policy. | Explains local decision rules, readiness gates, and ownership boundaries. |
 
 ## Agent Start Checklist
 
@@ -181,7 +189,8 @@ Before changing files, an agent should read:
 4. `docs/roadmap/roadmap.md`.
 5. `docs/reports/changelog.md`.
 6. `docs/governance/prioritization_policy.md` if the project uses one.
-7. Any architecture, governance, or validation docs named by the request.
+7. `docs/architecture/design_alignment_log.md` when design principles, educational explanation, architecture, or process choices may change.
+8. Any architecture, governance, or validation docs named by the request.
 
 Use the Project Ops Agent Execution Contract from the installed Project Ops version as the detailed step-by-step protocol.
 
@@ -191,9 +200,10 @@ Use the Project Ops Agent Execution Contract from the installed Project Ops vers
 2. Keep the request State Summary current.
 3. Compute priority and Ready State before execution.
 4. Mirror active request state into `docs/roadmap/roadmap.md`.
-5. Record meaningful outcomes in `docs/reports/changelog.md`.
-6. Run the validation commands listed in `.project_ops/config.json`.
-7. Close with doc sync and a post-mortem when the request is complete.""",
+5. Update `docs/architecture/design_alignment_log.md` when the work changes guiding principles, systems, elements, processes, or teaching notes.
+6. Record meaningful outcomes in `docs/reports/changelog.md`.
+7. Run the validation commands listed in `.project_ops/config.json`.
+8. Close with doc sync and a post-mortem when the request is complete.""",
     )
 
 
@@ -247,8 +257,12 @@ def planned_files(project_id: str, project_name: str, role: str, visibility: str
         PlannedFile(Path("CHANGELOG.md"), render_changelog(project_name)),
         PlannedFile(Path(".gitignore"), template("gitignore")),
         PlannedFile(Path(".editorconfig"), template("editorconfig")),
+        PlannedFile(Path("AGENTS.md"), template("AGENTS.md")),
+        PlannedFile(Path("CLAUDE.md"), template("CLAUDE.md")),
+        PlannedFile(Path(".github/dependabot.yml"), template("dependabot.yml")),
         PlannedFile(Path("docs/project_ops.md"), render_project_ops_doc(project_name)),
         PlannedFile(Path("docs/architecture/README.md"), template("architecture_readme.md")),
+        PlannedFile(Path("docs/architecture/design_alignment_log.md"), template("design_alignment_log.md")),
         PlannedFile(Path("docs/governance/README.md"), template("governance_readme.md")),
         PlannedFile(Path("docs/governance/prioritization_policy.md"), template("prioritization_policy.md")),
         PlannedFile(Path("docs/roadmap/roadmap.md"), template("roadmap.md")),
@@ -259,6 +273,7 @@ def planned_files(project_id: str, project_name: str, role: str, visibility: str
         PlannedFile(Path("docs/templates/bootstrap_manifest.md"), template("bootstrap_manifest.md")),
         PlannedFile(Path("docs/templates/project_ops_contract.md"), template("project_ops_contract.md")),
         PlannedFile(Path("docs/templates/architecture_readme.md"), template("architecture_readme.md")),
+        PlannedFile(Path("docs/templates/design_alignment_log.md"), template("design_alignment_log.md")),
         PlannedFile(Path("docs/templates/governance_readme.md"), template("governance_readme.md")),
         PlannedFile(Path("docs/templates/prioritization_policy.md"), template("prioritization_policy.md")),
         PlannedFile(Path("docs/templates/roadmap.md"), template("roadmap.md")),

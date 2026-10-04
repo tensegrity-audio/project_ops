@@ -132,12 +132,47 @@ READINESS_SECTION_FIELDS = {
         "Risks",
         "Alternatives Considered",
     ),
+    "Design Alignment": (
+        "Guiding Principles Affected",
+        "Systems / Elements / Processes Used",
+        "Alignment Rationale",
+        "Design Alignment Log Update",
+        "Plain-Language Explanation",
+    ),
     "Plan": (
         "Steps",
         "Validation Plan",
         "Rollback / Stop Conditions",
     ),
 }
+
+
+# Sections that adopters may leave out unless their config requires them.
+OPTIONAL_SECTIONS = {
+    "Design Alignment": ("validation", "requireDesignAlignment"),
+}
+# Older label spellings that satisfy the same field.
+FIELD_ALIASES = {
+    "Plain-Language Explanation": ("Student-Facing Explanation",),
+}
+
+
+def is_section_required(config: dict[str, Any], section_name: str) -> bool:
+    toggle = OPTIONAL_SECTIONS.get(section_name)
+    if toggle is None:
+        return True
+    group, key = toggle
+    value = config.get(group, {})
+    return bool(isinstance(value, dict) and value.get(key, False))
+
+
+def lookup_field(fields: dict[str, str], label: str) -> str | None:
+    if label in fields:
+        return fields[label]
+    for alias in FIELD_ALIASES.get(label, ()):
+        if alias in fields:
+            return fields[alias]
+    return None
 
 
 def repo_path(path: str | Path) -> Path:
@@ -272,7 +307,10 @@ def audit_task_graph_readiness(section: str | None, errors: list[str]) -> None:
                 return
 
 
-def audit_definition_of_ready(summary: dict[str, str], text: str, errors: list[str]) -> None:
+def audit_definition_of_ready(
+    summary: dict[str, str], text: str, errors: list[str], config: dict[str, Any] | None = None
+) -> None:
+    config = config or {}
     phase = summary.get("Phase", "").strip().upper()
     if phase not in READY_PHASES:
         return
@@ -287,13 +325,14 @@ def audit_definition_of_ready(summary: dict[str, str], text: str, errors: list[s
     for section_name, fields in READINESS_SECTION_FIELDS.items():
         section = sections.get(section_name)
         if section is None:
-            errors.append(f"Missing readiness section before EXECUTION: {section_name}")
+            if is_section_required(config, section_name):
+                errors.append(f"Missing readiness section before EXECUTION: {section_name}")
             continue
         section_fields = parse_bullet_fields(section)
         if section_name == "Definition Of Ready":
             definition_fields = section_fields
         for field in fields:
-            add_readiness_field_error(errors, f"{section_name} -> {field}", section_fields.get(field))
+            add_readiness_field_error(errors, f"{section_name} -> {field}", lookup_field(section_fields, field))
         if section_name == "Definition Of Ready" and section_fields.get("Ready State", "").strip().lower() != "ready":
             errors.append("Definition of Ready not satisfied before EXECUTION: Definition Of Ready -> Ready State must be Ready")
     if summary.get("Ready State", "").strip().lower() == "ready" and is_blocked_decision_value(
@@ -394,7 +433,7 @@ def audit_request(root: Path, config: dict[str, Any], request_path: Path) -> tup
         if key and summary.get(key) and not TIMESTAMP_RE.search(summary[key]):
             errors.append(f"Missing timestamp in field '{key}'.")
 
-    audit_definition_of_ready(summary, text, errors)
+    audit_definition_of_ready(summary, text, errors, config)
 
     paths = config["paths"]
     validation = config.get("validation", {})

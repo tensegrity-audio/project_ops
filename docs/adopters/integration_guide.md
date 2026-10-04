@@ -12,7 +12,7 @@ future package.
 Project Ops templates
   -> starter adopter docs
   -> local config
-  -> request, roadmap, changelog, governance, and architecture surfaces
+  -> request, roadmap, changelog, design alignment, governance, and architecture surfaces
   -> read-only audits
   -> contributor or agent closeout evidence
 ```
@@ -31,7 +31,7 @@ history, and validation commands.
 | Requests | `templates/request.md` and optional request-state schema. | Request docs under the configured in-progress or completed paths. | The State Summary gives humans and tools the same phase, status, resume point, and risk picture. |
 | Roadmap | A starter roadmap template, prioritization fields, and request parity rules. | The actual project roadmap. | Active work has a visible index, computable sort order, and links back to request docs. |
 | Changelog | A starter changelog template and changelog requirement flag. | The actual change history. | Meaningful outcomes leave a durable breadcrumb for releases and handoffs. |
-| Architecture | Starter architecture index guidance. | Project-specific maps, interfaces, and decisions. | System knowledge stays in the adopter repo, not in Project Ops. |
+| Architecture and design alignment | Starter architecture index guidance and `templates/design_alignment_log.md`. | Project-specific maps, interfaces, decisions, guiding principles, and teaching notes. | System knowledge and rationale stay visible in the adopter repo, not in Project Ops. |
 | Governance | Starter governance index guidance and `templates/prioritization_policy.md`. | Local ownership, approval, priority, readiness, privacy, and validation rules. | The operating policy is explicit instead of implied. |
 | Audits | Read-only structure and request parity checks. | Files and config for the tools to inspect. | Adoption can be verified without rewriting project-owned files. |
 | Examples and tests | Synthetic fixtures and regression tests. | Real usage feedback from adopter repos. | Project Ops can evolve while keeping the public integration surface understandable. |
@@ -50,14 +50,16 @@ history, and validation commands.
    agents.
 6. Link the local bridge document to the Project Ops Agent Execution Contract
    or keep a local copy if the adopter needs stricter rules.
-7. Add or map the request template, roadmap, changelog, governance,
-   prioritization policy, and architecture surfaces.
+7. Add or map the request template, roadmap, changelog, design alignment log,
+   governance, prioritization policy, and architecture surfaces.
 8. Run `tools/project_ops_audit.py --repo <adopter>` and fix missing required
    files or intentional config mistakes.
 9. Create one request artifact for the integration work itself, then run
    `tools/project_ops_request_audit.py` once roadmap and changelog parity exist.
 10. Add audit commands to local validation or CI only after the read-only checks
-   are useful and quiet enough for the team.
+   are useful and quiet enough for the team. In CI, call the reusable workflows
+   (`reusable-project-ops-audit.yml`, `reusable-request-audit.yml`) at a pinned
+   tag instead of copying steps; see the README section "Use From CI".
 
 ## Blank Repo Adoption
 
@@ -81,6 +83,8 @@ missing files. Existing project-owned files are skipped.
   another without guesswork.
 - The roadmap can be sorted by Ready State, Priority Lane, Priority Score, and
   due date or timing driver.
+- The design alignment log names guiding principles and explains the systems,
+  elements, processes, tools, or patterns that support them.
 - `validation.commands` names the checks a contributor or agent should run.
 - Private or local-only paths are listed in `privacy.privateHistoryPaths`.
 - Architecture and governance docs describe the adopter's own system and

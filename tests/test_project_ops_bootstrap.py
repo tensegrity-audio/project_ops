@@ -54,8 +54,10 @@ class ProjectOpsBootstrapTests(unittest.TestCase):
             self.assertEqual(apply_result.returncode, 0, apply_result.stderr)
             self.assertTrue((repo / ".project_ops" / "config.json").exists())
             self.assertTrue((repo / "docs" / "roadmap" / "in_progress" / "_REQUEST_TEMPLATE.md").exists())
+            self.assertTrue((repo / "docs" / "architecture" / "design_alignment_log.md").exists())
             self.assertTrue((repo / "docs" / "governance" / "prioritization_policy.md").exists())
             self.assertTrue((repo / "docs" / "templates" / "prioritization_policy.md").exists())
+            self.assertTrue((repo / "docs" / "templates" / "design_alignment_log.md").exists())
 
             audit_result = run_tool(str(AUDIT), "--repo", str(repo))
             self.assertEqual(audit_result.returncode, 0, audit_result.stdout + audit_result.stderr)
@@ -205,6 +207,14 @@ class ProjectOpsBootstrapTests(unittest.TestCase):
 - Touch Map: tools/project_ops_request_audit.py and tests.
 - Risks: N/A
 - Alternatives Considered: N/A
+
+## Design Alignment
+
+- Guiding Principles Affected: DP-002 resumable process state.
+- Systems / Elements / Processes Used: Request audit readiness checks.
+- Alignment Rationale: The audit keeps process requirements visible before execution.
+- Design Alignment Log Update: N/A for temp fixture.
+- Plain-Language Explanation: This fixture shows how audits prevent hidden process gaps.
 
 ## Plan
 

@@ -17,7 +17,8 @@
     "projectOpsContract": "docs/project_ops.md",
     "templateRoot": "docs/templates",
     "projectAdminBaselineTemplate": "docs/templates/project_admin_baseline.md",
-    "prioritizationPolicy": "docs/governance/prioritization_policy.md"
+    "prioritizationPolicy": "docs/governance/prioritization_policy.md",
+    "designAlignmentLog": "docs/architecture/design_alignment_log.md"
   },
   "scopeLabels": [
     "governance",
@@ -35,6 +36,7 @@
     "docs/roadmap/roadmap.md",
     "docs/roadmap/in_progress/_REQUEST_TEMPLATE.md",
     "docs/architecture/README.md",
+    "docs/architecture/design_alignment_log.md",
     "docs/governance/README.md",
     "docs/reports/changelog.md"
   ],
@@ -78,7 +80,8 @@
       "docs/project_ops.md",
       "docs/roadmap/roadmap.md",
       "docs/roadmap/in_progress/_REQUEST_TEMPLATE.md",
-      "docs/reports/changelog.md"
+      "docs/reports/changelog.md",
+      "docs/architecture/design_alignment_log.md"
     ],
     "recommendedFiles": [
       "docs/architecture/README.md",
@@ -90,7 +93,8 @@
       "docs/governance",
       "docs/roadmap/in_progress",
       "docs/roadmap/completed",
-      "docs/reports"
+      "docs/reports",
+      "docs/templates"
     ]
   },
   "adoption": {

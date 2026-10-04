@@ -6,7 +6,8 @@ Use `.project_ops/config.json` in the adopter repo. A standalone example lives a
 
 The config is the adapter between Project Ops and the adopter. Templates and
 docs can use defaults, but tools should discover the real roadmap, request,
-changelog, governance, privacy, and validation surfaces from this file.
+changelog, design alignment, governance, privacy, and validation surfaces from
+this file.
 
 ## Minimal Shape
 
@@ -29,7 +30,8 @@ changelog, governance, privacy, and validation surfaces from this file.
     "projectOpsContract": "docs/project_ops.md",
     "templateRoot": "docs/templates",
     "projectAdminBaselineTemplate": "docs/templates/project_admin_baseline.md",
-    "prioritizationPolicy": "docs/governance/prioritization_policy.md"
+    "prioritizationPolicy": "docs/governance/prioritization_policy.md",
+    "designAlignmentLog": "docs/architecture/design_alignment_log.md"
   },
   "scopeLabels": [
     "governance",
@@ -47,6 +49,7 @@ changelog, governance, privacy, and validation surfaces from this file.
     "docs/roadmap/roadmap.md",
     "docs/roadmap/in_progress/_REQUEST_TEMPLATE.md",
     "docs/architecture/README.md",
+    "docs/architecture/design_alignment_log.md",
     "docs/governance/README.md",
     "docs/reports/changelog.md"
   ],
@@ -61,6 +64,7 @@ changelog, governance, privacy, and validation surfaces from this file.
   "validation": {
     "requireChangelog": true,
     "requireRoadmapParity": true,
+    "requireDesignAlignment": false,
     "allowEmptyRoadmap": true,
     "dryRunByDefault": true,
     "commands": [
@@ -94,7 +98,8 @@ changelog, governance, privacy, and validation surfaces from this file.
       "docs/project_ops.md",
       "docs/roadmap/roadmap.md",
       "docs/roadmap/in_progress/_REQUEST_TEMPLATE.md",
-      "docs/reports/changelog.md"
+      "docs/reports/changelog.md",
+      "docs/architecture/design_alignment_log.md"
     ],
     "recommendedFiles": [
       ".editorconfig",
@@ -123,10 +128,18 @@ Before adopting Project Ops, decide:
 - which scope labels are meaningful,
 - where request artifacts live,
 - where prioritization policy and Ready gate rules live,
+- where the design alignment log lives,
 - where private notes and local evidence are allowed,
 - which validation command proves the repo is healthy,
 - which files and directories bootstrap must create,
 - and when audits should warn versus fail.
+
+## Optional Sections
+
+`validation.requireDesignAlignment` (default `false`) controls whether a request
+must carry a filled Design Alignment section before `EXECUTION`. Leave it off for
+projects that do not keep a design alignment log. When the section is present it
+is audited regardless of the flag, so a half-filled section still fails.
 
 ## Validation Commands
 

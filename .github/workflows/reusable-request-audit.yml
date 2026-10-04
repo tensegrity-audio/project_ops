@@ -1,0 +1,131 @@
+name: Project Ops request audit (reusable)
+
+# Call from an adopter repo on pull_request and push:
+#
+#   jobs:
+#     request-audit:
+#       uses: tensegrity-audio/project_ops/.github/workflows/reusable-request-audit.yml@v0.2.0
+#       with:
+#         project-ops-ref: v0.2.0
+#         request-path-regex: '^docs/roadmap/(in_progress|completed)/.*\.md$'
+#
+# Audits every request artifact that changed in the push or pull request
+# against the adopter's roadmap and changelog. Read-only.
+
+on:
+  workflow_call:
+    inputs:
+      project-ops-ref:
+        description: Tag or SHA of tensegrity-audio/project_ops to run the tools from.
+        type: string
+        required: false
+        default: v0.2.0
+      python-version:
+        description: Python version for the tools.
+        type: string
+        required: false
+        default: "3.12"
+      request-path-regex:
+        description: Extended regex selecting request artifacts from changed paths.
+        type: string
+        required: false
+        default: '^docs/roadmap/(in_progress|completed)/.*\.md$'
+      exclude-regex:
+        description: Extended regex for changed paths to skip, such as the template.
+        type: string
+        required: false
+        default: '/_REQUEST_TEMPLATE\.md$'
+      config:
+        description: Adopter config path relative to the adopter root.
+        type: string
+        required: false
+        default: .project_ops/config.json
+      repo-path:
+        description: Adopter root relative to the checkout, for monorepos or examples.
+        type: string
+        required: false
+        default: "."
+
+permissions:
+  contents: read
+
+jobs:
+  request-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out the adopter repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Check out Project Ops
+        uses: actions/checkout@v4
+        with:
+          repository: tensegrity-audio/project_ops
+          ref: ${{ inputs.project-ops-ref }}
+          path: .project-ops-framework
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python-version }}
+
+      - name: Collect changed request artifacts
+        id: changed
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          PUSH_BEFORE: ${{ github.event.before }}
+          PUSH_HEAD: ${{ github.sha }}
+          INCLUDE_RE: ${{ inputs.request-path-regex }}
+          EXCLUDE_RE: ${{ inputs.exclude-regex }}
+        run: |
+          set -euo pipefail
+          if [[ "$EVENT_NAME" == "pull_request" ]]; then
+            base="$PR_BASE"; head="$PR_HEAD"
+          else
+            base="$PUSH_BEFORE"; head="$PUSH_HEAD"
+          fi
+          # A new branch or a force push has no usable "before"; fall back to the head commit alone.
+          if [[ -z "$base" || "$base" =~ ^0+$ ]] || ! git cat-file -e "$base^{commit}" 2>/dev/null; then
+            range="$head^!"
+          else
+            range="$base $head"
+          fi
+          mapfile -t files < <(
+            git diff --name-only --diff-filter=ACMR $range \
+              | grep -E "$INCLUDE_RE" \
+              | grep -Ev "$EXCLUDE_RE" \
+              || true
+          )
+          if [[ ${#files[@]} -eq 0 ]]; then
+            echo "count=0" >> "$GITHUB_OUTPUT"
+            echo "No request artifacts changed."
+            exit 0
+          fi
+          printf '%s\n' "${files[@]}" > .changed-request-docs.txt
+          echo "count=${#files[@]}" >> "$GITHUB_OUTPUT"
+          echo "Changed request artifacts:"
+          cat .changed-request-docs.txt
+
+      - name: Audit changed request artifacts
+        if: steps.changed.outputs.count != '0'
+        shell: bash
+        env:
+          CONFIG: ${{ inputs.config }}
+          REPO_PATH: ${{ inputs.repo-path }}
+        run: |
+          set -euo pipefail
+          status=0
+          while IFS= read -r request_doc; do
+            [[ -z "$request_doc" || ! -f "$request_doc" ]] && continue
+            echo "::group::Request audit - $request_doc"
+            python .project-ops-framework/tools/project_ops_request_audit.py --repo "$REPO_PATH" --config "$CONFIG" --request "${request_doc#"$REPO_PATH"/}" || status=1
+            echo "::endgroup::"
+          done < .changed-request-docs.txt
+          exit $status

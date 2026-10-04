@@ -105,6 +105,14 @@ READY_BODY = """
 - Risks: N/A
 - Alternatives Considered: N/A
 
+## Design Alignment
+
+- Guiding Principles Affected: DP-002 resumable process state.
+- Systems / Elements / Processes Used: Request audit readiness checks.
+- Alignment Rationale: The audit keeps process requirements visible before execution.
+- Design Alignment Log Update: N/A for temp fixture.
+- Plain-Language Explanation: This fixture shows how audits prevent hidden process gaps.
+
 ## Plan
 
 - Steps: Create synchronized temp request, roadmap, and changelog fixtures.
@@ -231,6 +239,50 @@ class ProjectOpsRequestAuditReadinessTests(unittest.TestCase):
             "Definition of Ready not satisfied before EXECUTION: decision links still indicate a blocker",
             errors,
         )
+
+    def test_design_alignment_is_optional_by_default(self) -> None:
+        start = READY_BODY.index("## Design Alignment")
+        end = READY_BODY.index("## Plan")
+        readiness = READY_BODY[:start] + READY_BODY[end:]
+        repo, config, request_path = self.write_repo(base_state_summary(), readiness)
+
+        errors, warnings = request_audit.audit_request(repo, config, request_path)
+
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+
+    def test_design_alignment_required_when_config_says_so(self) -> None:
+        start = READY_BODY.index("## Design Alignment")
+        end = READY_BODY.index("## Plan")
+        readiness = READY_BODY[:start] + READY_BODY[end:]
+        repo, config, request_path = self.write_repo(base_state_summary(), readiness)
+        config["validation"]["requireDesignAlignment"] = True
+
+        errors, warnings = request_audit.audit_request(repo, config, request_path)
+
+        self.assertEqual(warnings, [])
+        self.assertIn("Missing readiness section before EXECUTION: Design Alignment", errors)
+
+    def test_present_design_alignment_is_still_audited_when_optional(self) -> None:
+        readiness = READY_BODY.replace(
+            "- Alignment Rationale: The audit keeps process requirements visible before execution.",
+            "- Alignment Rationale: <how these choices reinforce or revise the principles>",
+        )
+        repo, config, request_path = self.write_repo(base_state_summary(), readiness)
+
+        errors, warnings = request_audit.audit_request(repo, config, request_path)
+
+        self.assertIn("Unresolved readiness field before EXECUTION: Design Alignment -> Alignment Rationale", errors)
+
+    def test_student_facing_explanation_label_still_accepted(self) -> None:
+        readiness = READY_BODY.replace("- Plain-Language Explanation:", "- Student-Facing Explanation:")
+        repo, config, request_path = self.write_repo(base_state_summary(), readiness)
+        config["validation"]["requireDesignAlignment"] = True
+
+        errors, warnings = request_audit.audit_request(repo, config, request_path)
+
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
 
 
 if __name__ == "__main__":

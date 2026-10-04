@@ -32,9 +32,11 @@ flowchart TD
   AdopterFiles --> Changelog[docs/reports/changelog.md]
   AdopterFiles --> Governance[docs/governance/README.md]
   AdopterFiles --> Architecture[docs/architecture/README.md]
+  AdopterFiles --> DesignLog[docs/architecture/design_alignment_log.md]
   ArtifactContract --> Roadmap
   ArtifactContract --> RequestTemplate
   ArtifactContract --> Changelog
+  ArtifactContract --> DesignLog
 
   Schemas[schemas/] --> Config
   Schemas --> Sidecars[Optional request state sidecars]
@@ -63,9 +65,9 @@ flowchart TD
 | `README.md` | Public entry point for what Project Ops is and how to start. | Links to adopter docs, templates, schemas, and tools. |
 | `docs/` | Human guidance for the operating model, adoption, configuration, and execution loop. | Explains how adopters use templates, config, and audits. |
 | `docs/concepts/project_ops_model.md` | Defines the boundary between reusable Project Ops material and adopter-owned history. | Supports adopter docs and this component map. |
-| `docs/concepts/artifact_contract.md` | Defines stable IDs and shared state fields across requests, roadmap, changelog, RFC-lite decisions, handoffs, and postmortems. | Gives docs, templates, and tools one traceability contract. |
+| `docs/concepts/artifact_contract.md` | Defines stable IDs and shared state fields across requests, roadmap, changelog, design alignment, RFC-lite decisions, handoffs, and postmortems. | Gives docs, templates, and tools one traceability contract. |
 | `docs/adopters/` | Practical onboarding docs for new or existing adopter repos. | Points to bootstrap, config, request flow, and audits. |
-| `templates/` | Copyable Markdown and baseline files for starter project operations. | Consumed by bootstrap and copied into adopter repos. |
+| `templates/` | Copyable Markdown and baseline files for starter project operations, including the design alignment log. | Consumed by bootstrap and copied into adopter repos. |
 | `schemas/project_config.schema.json` | Contract for `.project_ops/config.json`. | Used by humans and tools to understand project-local paths, validation, privacy, and bootstrap expectations. |
 | `schemas/request_state.schema.json` | Optional machine-readable sidecar contract for request state. | Complements the human Markdown request artifact. |
 | `tools/project_ops_bootstrap.py` | Dry-run-first file creator for blank or lightly prepared repos. It creates only missing files. | Reads templates and emits starter adopter files. |
@@ -115,6 +117,7 @@ request template
   -> request artifact
   -> roadmap entry
   -> RFC-lite decision when a tradeoff blocks readiness
+  -> design alignment log when principles, systems, or teaching notes change
   -> changelog breadcrumb
   -> request audit
   -> roadmap check
@@ -123,7 +126,9 @@ request template
 
 The request artifact is the source of current work state. The roadmap makes
 that work visible in the project plan. The changelog records meaningful
-outcomes. RFC-lite records choices that otherwise cause rework later.
+outcomes. The design alignment log explains the principles, systems, elements,
+and processes that keep the project understandable. RFC-lite records choices
+that otherwise cause rework later.
 `tools/project_ops_request_audit.py` checks one request deeply;
 `tools/project_ops_roadmap.py` checks the request collection against the
 roadmap so another person or agent can resume work without reconstructing state.
@@ -132,7 +137,8 @@ roadmap so another person or agent can resume work without reconstructing state.
 
 - Provides a reusable administrative skeleton for project repos.
 - Gives adopters copyable templates for roadmap, request, changelog,
-  governance, architecture, handoff, post-mortem, and phase-exit artifacts.
+  governance, architecture, design alignment, handoff, post-mortem, and
+  phase-exit artifacts.
 - Defines project-local configuration with a versioned JSON Schema ID.
 - Bootstraps missing files into an adopter repo without overwriting existing
   project-owned files.
@@ -140,7 +146,7 @@ roadmap so another person or agent can resume work without reconstructing state.
 - Audits one request artifact against roadmap, changelog, and readiness state.
 - Audits all configured request artifacts against roadmap State Summary entries.
 - Uses stable Request IDs as the trace through roadmap, changelog, decision,
-  handoff, and post-mortem artifacts.
+  design alignment, handoff, and post-mortem artifacts.
 - Provides synthetic examples and tests for the reusable behavior.
 
 ## What This Repo Does Not Do
@@ -168,6 +174,8 @@ Project Ops helps a repository answer operational questions early:
 - What should a contributor or agent read before changing the project?
 - How can a paused request be resumed without reconstructing context?
 - Which decision or readiness blocker explains why work should not start yet?
+- Which principles, systems, elements, and processes explain why the project is
+  built this way?
 
 The adopter still owns the answers. Project Ops provides the structure, starter
 files, and checks that make those answers durable.

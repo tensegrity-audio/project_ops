@@ -14,10 +14,12 @@ Key operating templates include [`request.md`](../templates/request.md),
 [`roadmap.md`](../templates/roadmap.md),
 [`roadmap_entry.md`](../templates/roadmap_entry.md), and
 [`prioritization_policy.md`](../templates/prioritization_policy.md).
+Use [`design_alignment_log.md`](../templates/design_alignment_log.md) to keep
+guiding principles, design-relevant systems, and teaching notes inspectable.
 
 Bootstrap and audit tools live in [`../tools`](../tools):
 
 - `project_ops_bootstrap.py` plans or creates starter Project Ops docs.
 - `project_ops_audit.py` checks adopter structure without rewriting files.
-- `project_ops_request_audit.py` checks request, roadmap, and changelog parity.
+- `project_ops_request_audit.py` checks request readiness plus roadmap and changelog parity.
 - `project_ops_roadmap.py` checks all configured request artifacts against the roadmap.

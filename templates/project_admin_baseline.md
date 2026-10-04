@@ -17,6 +17,7 @@ Use this template as the default administrative skeleton for a fresh project. Th
 | `docs/roadmap/in_progress/_REQUEST_TEMPLATE.md` | Must-have for Project Ops adopters | Defines the durable request artifact shape. |
 | `docs/reports/` | Must-have for Project Ops adopters | Holds changelog, audits, release notes, and post-mortems. |
 | `docs/architecture/` | Recommended | Holds system maps, boundary docs, contracts, and design decisions. |
+| `docs/architecture/design_alignment_log.md` | Must-have for Project Ops adopters | Records guiding principles, design-relevant systems and processes, and teaching notes. |
 | `docs/governance/` | Recommended for multi-person or agent-assisted projects | Holds decision policy, RFC Lite rules, autonomy boundaries, ownership rules, and roadmap topology. |
 | `docs/governance/prioritization_policy.md` | Recommended for roadmap-driven projects | Defines scoring inputs, priority lanes, and Definition of Ready gates. |
 | `docs/templates/` | Recommended | Holds local copies of Project Ops templates for offline or project-specific adaptation. |
@@ -42,6 +43,7 @@ Use this template as the default administrative skeleton for a fresh project. Th
     project_ops.md
     architecture/
       README.md
+      design_alignment_log.md
     governance/
       README.md
       prioritization_policy.md
@@ -66,6 +68,8 @@ Use this template as the default administrative skeleton for a fresh project. Th
 - What validation command proves the project still works?
 - What docs must an agent or contributor read before making changes?
 - What priority scoring and Definition of Ready gates decide roadmap order?
+- What design principles should guide the project, and which systems or
+  processes express them?
 - What lifecycle artifacts should be local-private?
 - What release/versioning pattern will the project use?
 
@@ -88,7 +92,8 @@ Use this template as the default administrative skeleton for a fresh project. Th
     "requestTemplate": "docs/roadmap/in_progress/_REQUEST_TEMPLATE.md",
     "projectOpsContract": "docs/project_ops.md",
     "templateRoot": "docs/templates",
-    "projectAdminBaselineTemplate": "docs/templates/project_admin_baseline.md"
+    "projectAdminBaselineTemplate": "docs/templates/project_admin_baseline.md",
+    "designAlignmentLog": "docs/architecture/design_alignment_log.md"
   },
   "scopeLabels": [
     "governance",
@@ -106,6 +111,7 @@ Use this template as the default administrative skeleton for a fresh project. Th
     "docs/roadmap/roadmap.md",
     "docs/roadmap/in_progress/_REQUEST_TEMPLATE.md",
     "docs/architecture/README.md",
+    "docs/architecture/design_alignment_log.md",
     "docs/governance/README.md",
     "docs/reports/changelog.md"
   ],
@@ -146,6 +152,7 @@ Use this template as the default administrative skeleton for a fresh project. Th
 - `docs/roadmap/completed/` exists.
 - `docs/reports/changelog.md` exists.
 - `docs/architecture/README.md` exists or the project records why architecture docs are deferred.
+- `docs/architecture/design_alignment_log.md` exists or the project records why design alignment is deferred.
 - `docs/governance/README.md` exists or the project records why governance docs are deferred.
 - `docs/governance/prioritization_policy.md` exists or the project records why prioritization policy is deferred.
 - Required docs are listed in `.project_ops/config.json`.

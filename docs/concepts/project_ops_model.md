@@ -12,6 +12,7 @@ Project Ops owns reusable patterns:
 - roadmap entry template,
 - prioritization policy template,
 - changelog entry template,
+- design alignment log template,
 - RFC Lite decision template,
 - post-mortem template,
 - handoff template,
@@ -31,6 +32,7 @@ Each adopter owns its actual work:
 - changelog,
 - request history,
 - validation evidence,
+- design principles and design alignment history,
 - release notes,
 - private reports,
 - local scope labels,
@@ -53,8 +55,9 @@ If a file only makes sense for one project, it belongs with that project.
 If a file helps many projects create, validate, or maintain their own administrative structure, it may belong in Project Ops.
 
 For a component-level view of this repository, see [Repo Component Map](repo_component_map.md).
-For the ID and state fields that connect request, roadmap, changelog,
-decision, handoff, and post-mortem artifacts, see [Artifact Contract](artifact_contract.md).
+For the ID and state fields that connect request, roadmap, changelog, design
+alignment, decision, handoff, and post-mortem artifacts, see
+[Artifact Contract](artifact_contract.md).
 
 ## The Integration Handshake
 
@@ -65,7 +68,9 @@ contracts:
 2. `.project_ops/config.json` maps those artifacts to local paths and policies.
 3. Request docs carry current task state.
 4. Roadmap and changelog docs mirror planning and history.
-5. Audit tools read the config and artifacts without rewriting them.
+5. The design alignment log keeps project principles, systems, elements,
+   processes, and teaching notes visible.
+6. Audit tools read the config and artifacts without rewriting them.
 
 That handshake keeps Project Ops reusable while letting each adopter keep its
 own architecture, governance, validation commands, and project history.

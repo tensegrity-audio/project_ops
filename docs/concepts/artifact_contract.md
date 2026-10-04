@@ -3,17 +3,20 @@
 Project Ops connects its subsystems through stable IDs and shared state blocks.
 The goal is simple: a person or agent should be able to follow one request from
 intake through roadmap priority, decision records, validation evidence,
-changelog history, handoff, post-mortem, and closeout.
+design alignment, changelog history, handoff, post-mortem, and closeout.
 
 ## Stable IDs
 
-Use stable, lowercase, filename-safe IDs:
+Use stable IDs. Request-like IDs should be lowercase and filename-safe; local
+principle or design-log entry IDs can use short human-readable codes:
 
 ```text
 request_id: project-bootstrap
 decision_id: project-bootstrap-architecture
 task_id: project-bootstrap-T1
 rewind_id: project-bootstrap-RW-001
+principle_id: DP-001
+design_alignment_entry_id: DAL-001
 ```
 
 Recommended pattern:
@@ -23,6 +26,8 @@ Recommended pattern:
   unlocks that request.
 - `task_id`: starts with the related `request_id` or milestone ID.
 - `rewind_id`: starts with the related `request_id`.
+- `principle_id`: uses a stable short code such as `DP-001`.
+- `design_alignment_entry_id`: uses a stable short code such as `DAL-001`.
 
 Do not rename IDs for presentation. Change titles freely, but keep IDs stable.
 
@@ -63,6 +68,7 @@ State Summary
 | Request artifact | `Request ID` in State Summary. |
 | Roadmap entry | Same State Summary plus `Request Doc`. |
 | Changelog entry | `Request ID`, request doc path, and roadmap entry reference. |
+| Design alignment log | `Request ID` for updates and principle or entry IDs for design-relevant choices. |
 | RFC Lite decision | `Decision ID`, related `Request IDs`, and whether it blocks readiness. |
 | Handoff | `Request ID`, current phase/state, files touched, validation, and resume action. |
 | Post-mortem | `Request ID`, outcome, lessons, and follow-up IDs. |
@@ -88,5 +94,7 @@ Project Ops tools should prefer IDs over fuzzy text when possible:
   filename stem;
 - roadmap checks should compare State Summary fields across request and roadmap;
 - changelog checks should look for the stable `Request ID`;
+- design alignment updates should link back to the stable `Request ID` and
+  principle or entry IDs;
 - future decision checks should use `Decision ID` and `Request ID` links rather
   than searching for titles.

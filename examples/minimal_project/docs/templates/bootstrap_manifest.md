@@ -12,6 +12,7 @@ Use this manifest to understand what `tools/project_ops_bootstrap.py` creates fo
 | `.editorconfig` | `templates/editorconfig` | Recommended | Adjust only if the project has established formatting rules. |
 | `docs/project_ops.md` | generated starter | Must-have | Add local operating notes if the project differs from the defaults. |
 | `docs/architecture/README.md` | `templates/architecture_readme.md` | Recommended | Link architecture maps as they are created. |
+| `docs/architecture/design_alignment_log.md` | `templates/design_alignment_log.md` | Must-have | Record guiding principles, design-relevant systems and processes, and teaching notes. |
 | `docs/governance/README.md` | `templates/governance_readme.md` | Recommended | Add local decision, prioritization, approval, and validation policy. |
 | `docs/governance/prioritization_policy.md` | `templates/prioritization_policy.md` | Recommended | Tune score inputs, priority lanes, and Definition of Ready gates. |
 | `docs/roadmap/roadmap.md` | `templates/roadmap.md` | Must-have | Add the first active request or backlog item. |
